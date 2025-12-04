@@ -50,4 +50,9 @@ final class StockFactory extends PersistentObjectFactory
             // ->afterInstantiate(function(Stock $stock): void {})
         ;
     }
+
+    protected function defaults(): array|callable
+    {
+        // TODO: Implement defaults() method.
+    }
 }

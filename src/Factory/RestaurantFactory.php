@@ -30,16 +30,15 @@ final class RestaurantFactory extends PersistentObjectFactory
      *
      * @todo add your default values here
      */
-    #[\Override]
-    protected function defaults(): array|callable
+    protected function getDefaults(): array
     {
         return [
-            'adresse' => self::faker()->text(255),
-            'codePostal' => self::faker()->text(255),
-            'estOuvert' => self::faker()->text(255),
-            'nom' => self::faker()->text(255),
-            'telephone' => self::faker()->text(255),
-            'ville' => self::faker()->text(255),
+            'nom' => self::faker()->company() . ' Resto',
+            'adresse' => self::faker()->streetAddress(),
+            'ville' => self::faker()->city(),
+            'codePostal' => self::faker()->postcode(),
+            'telephone' => self::faker()->phoneNumber(),
+            'estOuvert' => self::faker()->randomElement(['Ouvert', 'Fermé']),
         ];
     }
 
@@ -52,5 +51,10 @@ final class RestaurantFactory extends PersistentObjectFactory
         return $this
             // ->afterInstantiate(function(Restaurant $restaurant): void {})
         ;
+    }
+
+    protected function defaults(): array|callable
+    {
+        // TODO: Implement defaults() method.
     }
 }
