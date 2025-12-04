@@ -18,14 +18,7 @@ final class StockFactory extends PersistentObjectFactory
     public function __construct()
     {
     }
-    protected function getDefaults(): array
-    {
-        return [
-            'nom' => self::faker()->word(),
-            'quantite' => self::faker()->randomFloat(2, 0, 100),
-            'unite' => self::faker()->randomElement(['kg', 'L', 'pcs']),
-        ];
-    }
+
 
     #[\Override]
     public static function class(): string
@@ -53,6 +46,10 @@ final class StockFactory extends PersistentObjectFactory
 
     protected function defaults(): array|callable
     {
-        // TODO: Implement defaults() method.
+        return [
+            'nom' => self::faker()->word(),
+            'quantite' => self::faker()->randomFloat(2, 0, 100),
+            'unite' => self::faker()->randomElement(['kg', 'L', 'pcs']),
+        ];
     }
 }

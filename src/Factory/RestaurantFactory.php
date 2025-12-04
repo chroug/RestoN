@@ -25,22 +25,6 @@ final class RestaurantFactory extends PersistentObjectFactory
         return Restaurant::class;
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
-    protected function getDefaults(): array
-    {
-        return [
-            'nom' => self::faker()->company() . ' Resto',
-            'adresse' => self::faker()->streetAddress(),
-            'ville' => self::faker()->city(),
-            'codePostal' => self::faker()->postcode(),
-            'telephone' => self::faker()->phoneNumber(),
-            'estOuvert' => self::faker()->randomElement(['Ouvert', 'Fermé']),
-        ];
-    }
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
@@ -55,6 +39,13 @@ final class RestaurantFactory extends PersistentObjectFactory
 
     protected function defaults(): array|callable
     {
-        // TODO: Implement defaults() method.
+        return [
+            'nom' => self::faker()->company() . ' Resto',
+            'adresse' => self::faker()->streetAddress(),
+            'ville' => self::faker()->city(),
+            'codePostal' => self::faker()->postcode(),
+            'telephone' => self::faker()->phoneNumber(),
+            'estOuvert' => self::faker()->randomElement(['Ouvert', 'Fermé']),
+        ];
     }
 }
