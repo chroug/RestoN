@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StockRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StockRepository::class)]
@@ -21,6 +23,17 @@ class Stock
 
     #[ORM\Column(length: 10)]
     private ?string $unite = null;
+
+    /**
+     * @var Collection<int, Plats>
+     */
+    #[ORM\ManyToMany(targetEntity: Plats::class, mappedBy: 'ingredients')]
+    private Collection $plats;
+
+    public function __construct()
+    {
+        $this->plats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -59,6 +72,33 @@ class Stock
     public function setUnite(string $unite): static
     {
         $this->unite = $unite;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Plats>
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plats $plat): static
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+            $plat->addIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plats $plat): static
+    {
+        if ($this->plats->removeElement($plat)) {
+            $plat->removeIngredient($this);
+        }
 
         return $this;
     }

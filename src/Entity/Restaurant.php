@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RestaurantRepository::class)]
@@ -30,6 +32,17 @@ class Restaurant
 
     #[ORM\Column(length: 255)]
     private ?string $estOuvert = null;
+
+    /**
+     * @var Collection<int, Plats>
+     */
+    #[ORM\OneToMany(targetEntity: Plats::class, mappedBy: 'restaurant')]
+    private Collection $plats;
+
+    public function __construct()
+    {
+        $this->plats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +117,36 @@ class Restaurant
     public function setEstOuvert(string $estOuvert): static
     {
         $this->estOuvert = $estOuvert;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Plats>
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plats $plat): static
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+            $plat->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plats $plat): static
+    {
+        if ($this->plats->removeElement($plat)) {
+            // set the owning side to null (unless already changed)
+            if ($plat->getRestaurant() === $this) {
+                $plat->setRestaurant(null);
+            }
+        }
 
         return $this;
     }
