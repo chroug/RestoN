@@ -34,11 +34,13 @@ final class CommandeFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
+            'date' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeThisMonth()),
+            'statut' => self::faker()->randomElement(['EN_COURS', 'PRET', 'SERVI', 'PAYE']),
+            'numeroTable' => self::faker()->numberBetween(1, 20),
             'AEmporter' => self::faker()->boolean(),
-            'client' => ClientFactory::new(),
-            'date' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'restaurant' => RestaurantFactory::new(),
-            'statut' => self::faker()->text(20),
+            'client' => ClientFactory::new(),
+
         ];
     }
 
