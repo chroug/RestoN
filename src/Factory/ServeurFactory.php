@@ -40,7 +40,6 @@ final class ServeurFactory extends PersistentObjectFactory
             'nom' => self::faker()->lastName(),
             'prenom' => self::faker()->firstName(),
             'telephone' => self::faker()->phoneNumber(),
-            // Spécifique Serveur :
             'matricule' => 'SRV-' . self::faker()->unique()->randomNumber(5),
         ];
     }
