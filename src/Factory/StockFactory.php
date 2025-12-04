@@ -18,6 +18,14 @@ final class StockFactory extends PersistentObjectFactory
     public function __construct()
     {
     }
+    protected function getDefaults(): array
+    {
+        return [
+            'nom' => self::faker()->word(),
+            'quantite' => self::faker()->randomFloat(2, 0, 100),
+            'unite' => self::faker()->randomElement(['kg', 'L', 'pcs']),
+        ];
+    }
 
     #[\Override]
     public static function class(): string
@@ -30,15 +38,7 @@ final class StockFactory extends PersistentObjectFactory
      *
      * @todo add your default values here
      */
-    #[\Override]
-    protected function defaults(): array|callable
-    {
-        return [
-            'nom' => self::faker()->text(255),
-            'quantite' => self::faker()->randomFloat(),
-            'unite' => self::faker()->text(10),
-        ];
-    }
+
 
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
