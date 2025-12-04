@@ -21,7 +21,9 @@
             {% for plat in plats %}
                 <tr>
                     <td><strong>{{ plat.nom }}</strong></td>
+                    <td> x </td>
                     <td>{{ plat.prix }} €</td>
+
                     <td>{{ plat.restaurant.nom }}</td>
                     <td>
                         {# Double boucle car un plat a plusieurs ingrédients #}

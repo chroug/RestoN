@@ -12,7 +12,7 @@
             <th style="padding: 8px;">Adresse</th>
             <th style="padding: 8px;">Ville</th>
             <th style="padding: 8px;">État</th>
-            <th style="padding: 8px;">Gérant</th>
+
         </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                 <td style="padding: 8px;">{{ resto.adresse }}</td>
                 <td style="padding: 8px;">{{ resto.codePostal }} {{ resto.ville }}</td>
                 <td style="padding: 8px;">{{ resto.estOuvert ? 'Ouvert' : 'Fermé' }}</td>
-                <td style="padding: 8px;">{{ resto.gerant ? resto.gerant.nom : 'Aucun' }}</td>
+
             </tr>
         {% else %}
             <tr>

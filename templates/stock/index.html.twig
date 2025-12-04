@@ -11,16 +11,14 @@
             <th style="padding: 8px;">Nom</th>
             <th style="padding: 8px;">Quantité</th>
             <th style="padding: 8px;">Unité</th>
-            <th style="padding: 8px;">Seuil d'alerte</th>
+
         </tr>
         </thead>
         <tbody>
         {% for stock in stocks %}
             <tr>
                 <td style="padding: 8px;">{{ stock.nom }}</td>
-                <td style="padding: 8px; {{ stock.quantite <= stock.seuilAlerte ? 'color: red; font-weight: bold;' : '' }}">
-                    {{ stock.quantite }}
-                </td>
+                <td style="padding: 8px;"> {{ stock.quantite }}</td>
                 <td style="padding: 8px;">{{ stock.unite }}</td>
             </tr>
         {% else %}
