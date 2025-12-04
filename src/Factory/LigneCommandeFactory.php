@@ -34,9 +34,9 @@ final class LigneCommandeFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
+            'quantite' => self::faker()->numberBetween(1, 5),
             'commande' => CommandeFactory::new(),
             'plat' => PlatsFactory::new(),
-            'quantite' => self::faker()->randomNumber(),
         ];
     }
 
