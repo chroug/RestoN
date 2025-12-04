@@ -78,6 +78,26 @@
         "symfony/polyfill-php84": "*"
     },
     "scripts": {
+        "start": "symfony serve",
+        "test:phpcs": "php-cs-fixer fix --dry-run --diff --config .php-cs-fixer.dist.php",
+        "fix:phpcs": "php-cs-fixer fix --config .php-cs-fixer.dist.php",
+        "test:twigcs": "twigcs lint templates --severity error",
+        "fix:twigcs": "twig-cs-fixer fix templates",
+        "test:codeception": [
+            "php vendor/bin/codecept clean",
+            "bin/console doctrine:database:drop --force --quiet --env=test",
+            "bin/console doctrine:database:create --quiet --env=test",
+            "bin/console doctrine:schema:create --quiet --env=test",
+            "php vendor/bin/codecept run"
+        ],
+        "db": ["bin/console doctrine:database:drop --force --if-exists",
+            "bin/console doctrine:database:create",
+            "bin/console doctrine:migrations:migrate --no-interaction",
+            "bin/console doctrine:fixtures:load --no-interaction"],
+
+        "test": ["@test:phpcs", "@test:twigcs", "@test:codeception"],
+        "fix": ["@fix:phpcs", "@fix:twigcs"],
+
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
@@ -104,8 +124,21 @@
         "symfony/browser-kit": "8.0.*",
         "symfony/css-selector": "8.0.*",
         "symfony/debug-bundle": "8.0.*",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "^1.65.1",
         "symfony/stopwatch": "8.0.*",
         "symfony/web-profiler-bundle": "8.0.*"
-    }
+    },
+    "scripts-descriptions": {
+        "start": "demarrage du serveur web",
+        "test:phpcs": "démarrage de la verification du code par php cs fixer",
+        "fix:phpcs": "démarrage de la correction du code par php cs fixer",
+        "test:twigcs": "démarrage de la verification du code par twig cs fixer",
+        "fix:twigcs": "démarrage de la correction du code par php cs fixer",
+        "test": "demarrage des scripts de verification du code par php cs fixer et php twig fixer et codeception",
+        "fix": "demarrage des scripts de correction du code par php cs fixer et php twig fixer",
+    "test:codeception" : "demarrage des tests avec codeception : Nettoyage du répertoire « _output » et du code généré par Codeception, Destruction silencieuse forcée de la base de données, Création silencieuse de la base de données , Création silencieuse du schéma de la base de données , Exécution des tests Codeception   ",
+    "db" : "Destruction forcée de la base de données , Création de la base de données, Application des migrations successives sans questions interactives, Génération des données factices sans questions interactives "
+}
+
+
 }

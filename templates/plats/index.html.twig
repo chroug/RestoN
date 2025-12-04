@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre Carte{% endblock %}
+
+{% block body %}
+    <div style="margin: 20px;">
+
+
+        <table border="1" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+            <tr style="background-color: #f0f0f0;">
+                <th>Nom du Plat</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Restaurant</th>
+                <th>Ingrédients</th>
+            </tr>
+            </thead>
+            <tbody>
+            {# On boucle sur la liste envoyée par le contrôleur #}
+            {% for plat in plats %}
+                <tr>
+                    <td><strong>{{ plat.nom }}</strong></td>
+                    <td>{{ plat.description }}</td>
+                    <td>{{ plat.prix }} €</td>
+                    <td>{{ plat.restaurant.nom }}</td>
+                    <td>
+                        {# Double boucle car un plat a plusieurs ingrédients #}
+                        {% for ingredient in plat.ingredients %}
+                            <span style="background: #eee; padding: 2px 5px; border-radius: 4px;">
+                                {{ ingredient.nom }}
+                            </span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {# Si la liste est vide #}
+            {% else %}
+                <tr>
+                    <td colspan="5">Aucun plat disponible pour le moment.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
