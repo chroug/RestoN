@@ -40,21 +40,37 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
                 new RememberMeBadge(),
             ]
         );
+
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        // return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        $user = $token->getUser();
+
+        if (in_array('ROLE_GERANT', $user->getRoles())) {
+            // redirige vers le panel du resto ( a changer pas encore fait)
+            return new RedirectResponse($this->urlGenerator->generate('app_restaurant'));
+
+        } elseif (in_array('ROLE_SERVEUR', $user->getRoles())) {
+            // redirection pour le sereur vers les commandes
+            return new RedirectResponse($this->urlGenerator->generate('app_commandes'));
+
+        } else {
+            // du coup redirection pour le client vers le splats
+            return new RedirectResponse($this->urlGenerator->generate('app_plats'));
+        }
+
     }
 
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+
+
 }
