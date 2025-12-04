@@ -34,8 +34,8 @@ final class PlatsFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'nom' => self::faker()->text(255),
-            'prix' => self::faker()->randomFloat(),
+            'nom' => self::faker()->words(3, true),
+            'prix' => self::faker()->randomFloat(2, 9, 25),
             'restaurant' => RestaurantFactory::new(),
         ];
     }
