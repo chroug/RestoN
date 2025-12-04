@@ -34,11 +34,12 @@ final class UserFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'email' => self::faker()->text(180),
-            'nom' => self::faker()->text(255),
-            'password' => self::faker()->text(),
-            'prenom' => self::faker()->text(255),
+            'email' => self::faker()->unique()->email(),
             'roles' => [],
+            'password' => 'password',
+            'nom' => self::faker()->lastName(),
+            'prenom' => self::faker()->firstName(),
+            'telephone' => self::faker()->phoneNumber(),
         ];
     }
 
