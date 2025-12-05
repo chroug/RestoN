@@ -25,7 +25,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -50,15 +50,18 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
+            $this->addFlash('success', 'Inscription réussie ! Vérifiez vos emails pour activer votre compte.');
 
-            return $security->login($user, AppCustomAuthenticator::class, 'main');
+            // 2. On redirige vers la page de login au lieu de connecter l'utilisateur directement
+            return $this->redirectToRoute('app_login');
+
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }
+
 
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator): Response
