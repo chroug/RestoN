@@ -48,6 +48,9 @@ class RegistrationController extends AbstractController
                     ->to((string) $user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
+                    ->context([
+                        'user' => $user,
+                    ])
             );
 
             $this->addFlash('success', 'Inscription réussie ! Vérifiez vos emails pour activer votre compte.');
