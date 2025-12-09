@@ -17,7 +17,6 @@
             </tr>
             </thead>
             <tbody>
-            {# On boucle sur la liste envoyée par le contrôleur #}
             {% for plat in plats %}
                 <tr>
                     <td><strong>{{ plat.nom }}</strong></td>
@@ -26,7 +25,7 @@
 
                     <td>{{ plat.restaurant.nom }}</td>
                     <td>
-                        {# Double boucle car un plat a plusieurs ingrédients #}
+
                         {% for ingredient in plat.ingredients %}
                             <span style="background: #eee; padding: 2px 5px; border-radius: 4px;">
                                 {{ ingredient.nom }}
@@ -34,7 +33,7 @@
                         {% endfor %}
                     </td>
                 </tr>
-                {# Si la liste est vide #}
+
             {% else %}
                 <tr>
                     <td colspan="5">Aucun plat disponible pour le moment.</td>

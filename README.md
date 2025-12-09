@@ -25,3 +25,8 @@ php bin/console doctrine:migrations:migrate
 
 # Remplir la base avec des fausses données (Admin, plats, stocks...)
 php bin/console doctrine:fixtures:load
+
+
+MAILER_DSN="smtp://ilanrigolio1@gmail.com:infayrhbqgrcaaxo@smtp.gmail.com:587?encryption=tls&auth_mode=login"
+MAILER_FROM=ilanrigolio1@gmail.com
+
