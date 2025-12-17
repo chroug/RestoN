@@ -43,9 +43,10 @@
 
             <div style="margin-top: 20px;">
                 <a href="{{ path('app_plats') }}" style="margin-right: 15px;">Continuer mes achats</a>
-                <button style="background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer;">
-                    Valider la commande
-                </button>
+
+                <a href="{{ path('cart_validate') }}" class="btn btn-success">
+                    ✅ Valider la commande
+                </a>
             </div>
 
         {% else %}
