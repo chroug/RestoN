@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+    <div class="container" style="margin-top: 50px;">
+        <h1>🛒 Votre Panier</h1>
+
+        {% if items | length > 0 %}
+            <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 20px;" border="1">
+                <thead>
+                <tr>
+                    <th>Plat</th>
+                    <th>Prix</th>
+                    <th>Quantité</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.plat.nom }}</td>
+
+                        <td style="padding: 10px;">{{ item.plat.prix }} €</td>
+                        <td style="padding: 10px;">x {{ item.quantity }}</td>
+                        <td style="padding: 10px;">{{ item.plat.prix * item.quantity }} €</td>
+                        <td style="padding: 10px;">
+                            <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" style="color: red; text-decoration: none;">
+                                Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="3" style="text-align: right; padding: 10px;"><strong>Total :</strong></td>
+                    <td colspan="2" style="padding: 10px; font-size: 1.2em;"><strong>{{ total }} €</strong></td>
+                </tr>
+                </tfoot>
+            </table>
+
+            <div style="margin-top: 20px;">
+                <a href="{{ path('app_plats') }}" style="margin-right: 15px;">Continuer mes achats</a>
+                <button style="background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+                    Valider la commande
+                </button>
+            </div>
+
+        {% else %}
+            <p>Votre panier est vide pour l'instant.</p>
+            <a href="{{ path('app_plats') }}">Voir la carte</a>
+        {% endif %}
+    </div>
+{% endblock %}
