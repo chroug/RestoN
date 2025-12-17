@@ -32,6 +32,10 @@
                             </span>
                         {% endfor %}
                     </td>
+                    <a href="{{ path('cart_add', {'id': plat.id}) }}"
+                       style="background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">
+                        Ajouter au panier
+                    </a>
                 </tr>
 
             {% else %}
