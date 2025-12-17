@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Informations Restaurant{% endblock %}
+
+{% block body %}
+    <h1>Mon Restaurant</h1>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th style="padding: 8px;">Nom</th>
+            <th style="padding: 8px;">Adresse</th>
+            <th style="padding: 8px;">Ville</th>
+            <th style="padding: 8px;">État</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for resto in restaurants %}
+            <tr>
+                <td style="padding: 8px;">{{ resto.nom }}</td>
+                <td style="padding: 8px;">{{ resto.adresse }}</td>
+                <td style="padding: 8px;">{{ resto.codePostal }} {{ resto.ville }}</td>
+                <td style="padding: 8px;">{{ resto.estOuvert ? 'Ouvert' : 'Fermé' }}</td>
+
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" style="padding: 8px;">Aucun restaurant configuré.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

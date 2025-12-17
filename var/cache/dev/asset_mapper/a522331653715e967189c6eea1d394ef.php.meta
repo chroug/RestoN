@@ -1,1 +1,0 @@
-a:2:{i:0;O:46:"Symfony\Component\Config\Resource\FileResource":1:{s:8:"resource";s:75:"C:\Users\valen\Documents\BUT\sae3-01\assets\controllers\hello_controller.js";}i:1;O:55:"Symfony\Component\Config\Resource\FileExistenceResource":2:{s:8:"resource";s:87:"C:\Users\valen\Documents\BUT\sae3-01\assets\vendor\@hotwired\stimulus\stimulus.index.js";s:6:"exists";b:1;}}

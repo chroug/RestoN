@@ -12,3 +12,16 @@ Pierret Timothé - pier0271
 Resto'N est une application de gestion de restaurants est con¸cue pour aider les propriétaires de restaurants
 a gérer efficacement leur établissement. Elle permet aux utilisateurs de créer des réservations,
 de prendre des commandes, et de contrôler les stocks.
+
+# .env.local
+# Remplacez LOGIN, PASSWORD et NOM_BASE par vos infos
+DATABASE_URL="mysql://LOGIN:PASSWORD@mysql:3306/NOM_BASE?serverVersion=10.2.25-MariaDB&charset=utf8mb4"
+# Creer la Table sur le phpMyAdmin
+# Créer les fichiers de migration SQL
+php bin/console make:migration
+
+# Envoyer les tables dans la base
+php bin/console doctrine:migrations:migrate
+
+# Remplir la base avec des fausses données (Admin, plats, stocks...)
+php bin/console doctrine:fixtures:load

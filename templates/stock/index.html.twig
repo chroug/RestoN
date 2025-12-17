@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste du Stock{% endblock %}
+
+{% block body %}
+    <h1>Liste des Ingrédients</h1>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th style="padding: 8px;">Nom</th>
+            <th style="padding: 8px;">Quantité</th>
+            <th style="padding: 8px;">Unité</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for stock in stocks %}
+            <tr>
+                <td style="padding: 8px;">{{ stock.nom }}</td>
+                <td style="padding: 8px;"> {{ stock.quantite }}</td>
+                <td style="padding: 8px;">{{ stock.unite }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4" style="padding: 8px;">Aucun ingrédient enregistré.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block body %}
+    <h1>Historique des Commandes</h1>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th style="padding: 8px;">Date</th>
+            <th style="padding: 8px;">Table</th>
+            <th style="padding: 8px;">Statut</th>
+            <th style="padding: 8px;">Client</th>
+            <th style="padding: 8px;">Serveur</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for commande in commandes %}
+            <tr>
+                <td style="padding: 8px;">{{ commande.date|date('d/m/Y H:i') }}</td>
+                <td style="padding: 8px;">{{ commande.numeroTable }}</td>
+                <td style="padding: 8px;">{{ commande.statut }}</td>
+                <td style="padding: 8px;">{{ commande.client ? commande.client.nom : 'Non renseigné' }}</td>
+                <td style="padding: 8px;">{{ commande.serveur ? commande.serveur.prenom : 'Non assigné' }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" style="padding: 8px;">Aucune commande trouvée.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
