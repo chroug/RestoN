@@ -18,16 +18,28 @@ class CartService
 
     public function add(int $id): void
     {
-        $session = $this->requestStack->getSession();
-        $cart = $session->get('cart', []);
+        $panier = $this->requestStack->getSession()->get('cart', []);
 
-        if (!empty($cart[$id])) {
-            $cart[$id]++;
-        } else {
-            $cart[$id] = 1;
+        $platAjoute = $this->platsRepository->find($id);
+
+
+        if (!empty($panier)) {
+
+            $premierId = array_key_first($panier);
+            $premierPlat = $this->platsRepository->find($premierId);
+
+            if ($premierPlat->getRestaurant() !== $platAjoute->getRestaurant()) {
+                $panier = [];
+            }
         }
 
-        $session->set('cart', $cart);
+        if (!empty($panier[$id])) {
+            $panier[$id]++;
+        } else {
+            $panier[$id] = 1;
+        }
+
+        $this->requestStack->getSession()->set('cart', $panier);
     }
 
     public function remove(int $id): void
