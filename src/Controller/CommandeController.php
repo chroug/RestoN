@@ -9,11 +9,21 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CommandeController extends AbstractController
 {
-    #[Route('/commandes', name: 'app_commandes')]
-    public function index(CommandeRepository $repository): Response
+    #[Route('/mes-commandes', name: 'app_mes_commandes')]
+    public function index(CommandeRepository $commandeRepository): Response
     {
+
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $commandes = $commandeRepository->findBy(
+            ['client' => $this->getUser()],
+            ['date' => 'DESC']
+        );
+
         return $this->render('commande/index.html.twig', [
-            'commandes' => $repository->findAll(),
+            'commandes' => $commandes,
         ]);
     }
 }
