@@ -2,18 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Restaurant;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/restaurants')]
 class RestaurantController extends AbstractController
 {
-    #[Route('/restaurant', name: 'app_restaurant')]
-    public function index(RestaurantRepository $repository): Response
+
+    #[Route('/', name: 'app_restaurants')]
+    public function index(RestaurantRepository $restaurantRepository): Response
     {
         return $this->render('restaurant/index.html.twig', [
-            'restaurants' => $repository->findAll(),
+            'restaurants' => $restaurantRepository->findAll(),
+        ]);
+    }
+
+
+    #[Route('/{id}', name: 'app_restaurant_show')]
+    public function show(Restaurant $restaurant): Response
+    {
+
+        $plats = $restaurant->getPlats();
+
+        return $this->render('restaurant/show.html.twig', [
+            'restaurant' => $restaurant,
+            'plats' => $plats,
         ]);
     }
 }
