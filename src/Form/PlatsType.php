@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\Plats;
 use App\Entity\Restaurant;
 use App\Entity\Stock;
-use Doctrine\DBAL\Types\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -43,15 +43,15 @@ class PlatsType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '2048k',
-                        'mimeTypes' => [
+                    new File(
+                        maxSize: '2048k',
+                        mimeTypes: [
                             'image/jpeg',
                             'image/png',
                             'image/webp',
                         ],
-                        'mimeTypesMessage' => 'Merci d\'uploader une image valide (JPG, PNG, WEBP)',
-                    ])
+                        mimeTypesMessage: 'Merci d\'uploader une image valide (JPG, PNG, WEBP)'
+                    )
                 ],
             ])
         ;

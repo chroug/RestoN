@@ -7,9 +7,11 @@ use App\Form\PlatsType;
 use App\Repository\PlatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/plats')]
 final class AdminPlatsController extends AbstractController
@@ -51,12 +53,30 @@ final class AdminPlatsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_admin_plats_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Plats $plat, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Plats $plat, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(PlatsType::class, $plat);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $imageFile = $form->get('image')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('kernel.project_dir').'/public/images',
+                        $newFilename
+                    );
+                } catch (FileException $e) {}
+
+                $plat->setImage($newFilename);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_admin_plats_index', [], Response::HTTP_SEE_OTHER);
