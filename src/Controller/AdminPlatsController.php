@@ -15,7 +15,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/plats')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_GERANT')]
 final class AdminPlatsController extends AbstractController
 {
     #[Route(name: 'app_admin_plats_index', methods: ['GET'])]
