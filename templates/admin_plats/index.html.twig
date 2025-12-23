@@ -1,37 +1,49 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Plats index{% endblock %}
+{% block title %}Gestion des Plats{% endblock %}
 
 {% block body %}
-    <h1>Plats index</h1>
+    <div style="margin: 20px;">
+        <h1>Gestion des Plats</h1>
 
-    <table class="table">
-        <thead>
+        <table class="table">
+            <thead>
             <tr>
-                <th>Id</th>
+                <th>Image</th>
                 <th>Nom</th>
+                <th>Description</th>
                 <th>Prix</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
-        </thead>
-        <tbody>
-        {% for plat in plats %}
-            <tr>
-                <td>{{ plat.id }}</td>
-                <td>{{ plat.nom }}</td>
-                <td>{{ plat.prix }}</td>
-                <td>
-                    <a href="{{ path('app_admin_plats_show', {'id': plat.id}) }}">show</a>
-                    <a href="{{ path('app_admin_plats_edit', {'id': plat.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for plat in plats %}
+                <tr style="vertical-align: middle;">
+                    <td>
+                        {% if plat.image %}
+                            <img src="{{ asset('images/' ~ plat.image) }}"
+                                 alt="{{ plat.nom }}"
+                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px;">
+                        {% else %}
+                            <span style="color: gray; font-style: italic;">Pas d'image</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ plat.nom }}</td>
+                    <td>{{ plat.description }}</td>
+                    <td>{{ plat.prix }} €</td>
+                    <td>
+                        <a href="{{ path('app_admin_plats_show', {'id': plat.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                        <a href="{{ path('app_admin_plats_edit', {'id': plat.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" style="text-align: center;">Aucun plat trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-    <a href="{{ path('app_admin_plats_new') }}">Create new</a>
+        <a href="{{ path('app_admin_plats_new') }}" class="btn btn-success">Créer un nouveau plat</a>
+    </div>
 {% endblock %}
