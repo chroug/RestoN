@@ -54,7 +54,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
         if (in_array('ROLE_GERANT', $user->getRoles())) {
             // redirige vers le panel du resto ( a changer pas encore fait)
-            return new RedirectResponse($this->urlGenerator->generate('app_restaurant'));
+            return new RedirectResponse($this->urlGenerator->generate('app_admin_plats_index'));
 
         } elseif (in_array('ROLE_SERVEUR', $user->getRoles())) {
             // redirection pour le sereur vers les commandes
