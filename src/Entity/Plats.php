@@ -130,5 +130,6 @@ class Plats
         $this->image = $image;
 
         return $this;
+
     }
 }
