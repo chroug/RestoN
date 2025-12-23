@@ -31,6 +31,13 @@ class Plats
     #[ORM\ManyToMany(targetEntity: Stock::class, inversedBy: 'plats')]
     private Collection $ingredients;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
+
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
@@ -99,5 +106,30 @@ class Plats
         $this->ingredients->removeElement($ingredient);
 
         return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+
     }
 }
