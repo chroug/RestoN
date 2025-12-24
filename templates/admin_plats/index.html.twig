@@ -11,6 +11,7 @@
             <tr>
                 <th>Image</th>
                 <th>Nom</th>
+                <th>Catégorie</th>
                 <th>Description</th>
                 <th>Prix</th>
                 <th>Actions</th>
@@ -29,6 +30,13 @@
                         {% endif %}
                     </td>
                     <td>{{ plat.nom }}</td>
+                    <td>
+                        {% if plat.category %}
+                            <span class="badge bg-primary">{{ plat.category.name }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Aucune</span>
+                        {% endif %}
+                    </td>
                     <td>{{ plat.description }}</td>
                     <td>{{ plat.prix }} €</td>
                     <td>
@@ -45,5 +53,6 @@
         </table>
 
         <a href="{{ path('app_admin_plats_new') }}" class="btn btn-success">Créer un nouveau plat</a>
+        <a href="{{ path('app_category_index') }}" class="btn btn-secondary">Gérer les Catégories</a>
     </div>
 {% endblock %}

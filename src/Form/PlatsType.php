@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Plats;
 use App\Entity\Restaurant;
 use App\Entity\Stock;
@@ -53,6 +54,14 @@ class PlatsType extends AbstractType
                         mimeTypesMessage: 'Merci d\'uploader une image valide (JPG, PNG, WEBP)'
                     )
                 ],
+            ])
+
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'name',
+                'label' => 'Catégorie',
+                'placeholder' => 'Choisir une catégorie',
+                'required' => false,
             ])
         ;
     }
