@@ -39,6 +39,13 @@
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Inscription</a></li>
                 {% endif %}
+                {% if is_granted('ROLE_GERANT') %}
+                    <li class="nav-item">
+                        <a class="nav-link text-danger fw-bold" href="{{ path('app_admin_plats_index') }}">
+                            Admin
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
