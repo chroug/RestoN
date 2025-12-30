@@ -20,6 +20,11 @@
                     {% endif %} #}
 
                         <div class="card-body d-flex flex-column">
+                            {% if plat.category %}
+                                <span class="badge bg-primary mb-2">
+                                    {{ plat.category.name }}
+                                </span>
+                            {% endif %}
                             <h5 class="card-title">{{ plat.nom }}</h5>
 
 

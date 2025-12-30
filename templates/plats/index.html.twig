@@ -20,7 +20,20 @@
             <tbody>
             {% for plat in plats %}
                 <tr>
-                    <td><strong>{{ plat.nom }}</strong></td>
+                    <td>
+                        {% if plat.category %}
+                            <span class="badge rounded-pill bg-primary mb-2">
+                                {{ plat.category.name }}
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-danger mb-2">
+                                NON CLASSÉ
+                            </span>
+                        {% endif %}
+
+                        <br>
+                        <strong>{{ plat.nom }}</strong>
+                    </td>
                     <td> x </td>
                     <td>{{ plat.prix }} €</td>
 
