@@ -2,47 +2,83 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Welcome!{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <title>{% block title %}RestoN{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🍽️</text></svg>">
 
-
+    {#  bootstrap CSS #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
-    {% block stylesheets %}
-    {% endblock %}
+    {# ajout des logos avec bootstrap #}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    {% block javascripts %}
-    {% endblock %}
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{% endblock %}
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('app_home') }}">RestoN</a>
+        <a class="navbar-brand fw-bold text-warning" href="{{ path('app_home') }}">
+            <i class="bi bi-shop-window"></i> RestoN
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_restaurants') }}">🍽 Nos Restaurants</a>
+                    {# J'ai gardé ton lien vers les restaurants #}
+                    <a class="nav-link" href="{{ path('app_restaurants') }}">
+                        <i class="bi bi-journal-text"></i> Nos Restaurants
+                    </a>
                 </li>
             </ul>
-            <ul class="navbar-nav ms-auto">
+
+            <ul class="navbar-nav ms-auto align-items-center">
                 {% if app.user %}
-                    <li class="nav-item"><a class="nav-link text-warning fw-bold" href="{{ path('cart_index') }}">🛒 Mon Panier</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_mes_commandes') }}">📜 Mes Commandes</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_profile') }}">👤 Mon Profil</a></li>
-                    <li class="nav-item py-2 py-lg-0 px-2"><div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div><hr class="d-lg-none text-white-50"></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_login') }}">Connexion</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('app_register') }}">Inscription</a></li>
-                {% endif %}
-                {% if is_granted('ROLE_GERANT') %}
                     <li class="nav-item">
-                        <a class="nav-link text-danger fw-bold" href="{{ path('app_admin_plats_index') }}">
-                            Admin
+                        <a class="btn btn-outline-warning me-3" href="{{ path('cart_index') }}">
+                            <i class="bi bi-cart3"></i> Mon Panier
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> Mon Compte
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_mes_commandes') }}">
+                                    <i class="bi bi-receipt"></i> Mes Commandes
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                    <i class="bi bi-person-gear"></i> Mon Profil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                    <i class="bi bi-box-arrow-right"></i> Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-2 btn-sm" href="{{ path('app_register') }}">Inscription</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_GERANT') %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link text-danger fw-bold border border-danger rounded px-3" href="{{ path('app_admin_plats_index') }}">
+                            <i class="bi bi-shield-lock"></i> Admin
                         </a>
                     </li>
                 {% endif %}
@@ -50,18 +86,26 @@
         </div>
     </div>
 </nav>
-<div class="container mt-3">
+
+<main class="container mb-5">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show shadow-sm" role="alert">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endfor %}
     {% endfor %}
-</div>
 
-{% block body %}{% endblock %}
+    {% block body %}{% endblock %}
+</main>
+
+{# footer #}
+<footer class="mt-auto py-3 bg-white border-top text-center">
+    <div class="container">
+        <span class="text-muted small">© {{ 'now'|date('Y') }} RestoN</span>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 </body>
