@@ -3,3 +3,4 @@
 /vendor
 vendor
 /var/
+.env.local
