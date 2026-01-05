@@ -37,9 +37,16 @@ class Plats
     #[ORM\ManyToOne(inversedBy: 'plats')]
     private ?Category $category = null;
 
+    /**
+     * @var Collection<int, Commande>
+     */
+    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'plats')]
+    private Collection $commandes;
+
     public function __construct()
     {
         $this->platsStocks = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +153,33 @@ class Plats
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): static
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->addPlat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): static
+    {
+        if ($this->commandes->removeElement($commande)) {
+            $commande->removePlat($this);
+        }
 
         return $this;
     }

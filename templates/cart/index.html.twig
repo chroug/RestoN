@@ -26,7 +26,7 @@
                         <td style="padding: 10px;">x {{ item.quantity }}</td>
                         <td style="padding: 10px;">{{ item.plat.prix * item.quantity }} €</td>
                         <td style="padding: 10px;">
-                            <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" style="color: red; text-decoration: none;">
+                            <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" style="   color: red; text-decoration: none;">
                                 Supprimer
                             </a>
                         </td>
@@ -45,7 +45,7 @@
                 <a href="{{ path('app_restaurant_show', {'id': items[0].plat.restaurant.id}) }}"
                    class="btn btn-outline-secondary">Continuer mes achats</a>
 
-                <a href="{{ path('cart_validate') }}" class="btn btn-success">
+                <a href="{{ path('app_commande_valider') }}" class="btn btn-success">
                     Valider la commande
                 </a>
             </div>
