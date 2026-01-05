@@ -24,11 +24,14 @@ class CartService
 
 
         if (!empty($panier)) {
-
             $premierId = array_key_first($panier);
             $premierPlat = $this->platsRepository->find($premierId);
 
-            if ($premierPlat->getRestaurant() !== $platAjoute->getRestaurant()) {
+            if ($premierPlat) {
+                if ($premierPlat->getRestaurant() !== $platAjoute->getRestaurant()) {
+                    $panier = [];
+                }
+            } else {
                 $panier = [];
             }
         }

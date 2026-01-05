@@ -51,6 +51,7 @@ class AppFixtures extends Fixture
 
         PlatsFactory::createMany(10, [
             'restaurant' => $resto,
+            'platsStocks' => StockFactory::new()->many(1),
         ]);
 
         // 2. Serveurs
