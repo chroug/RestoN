@@ -1,23 +1,100 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription - RestoN{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="bi bi-person-plus-fill fs-3"></i>
+                            </div>
+                            <h2 class="fw-bold">Créer un compte</h2>
+                            <p class="text-muted">Rejoignez la communauté RestoN</p>
+                        </div>
 
-    <h1>Register</h1>
+                        {% for flash_error in app.flashes('verify_email_error') %}
+                            <div class="alert alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill"></i> {{ flash_error }}
+                            </div>
+                        {% endfor %}
+                        {{ form_start(registrationForm) }}
 
-    {{ form_errors(registrationForm) }}
+                        {% if not registrationForm.vars.valid %}
+                            <div class="alert alert-danger">
+                                {{ form_errors(registrationForm) }}
+                            </div>
+                        {% endif %}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(registrationForm.nom, {
+                                    'label': 'Nom',
+                                    'attr': {'placeholder': 'Votre nom'}
+                                }) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_row(registrationForm.prenom, {
+                                    'label': 'Prénom',
+                                    'attr': {'placeholder': 'Votre prénom'}
+                                }) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(registrationForm.telephone, {
+                                'label': 'Téléphone (optionnel)',
+                                'attr': {'placeholder': '06 12 34 56 78'}
+                            }) }}
+                        </div>
+
+                        <hr class="my-4 text-muted opacity-25">
+
+
+                        <div class="mb-3">
+                            {{ form_row(registrationForm.email, {
+                                'label': 'Adresse Email',
+                                'attr': {'placeholder': 'exemple@email.com'}
+                            }) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_row(registrationForm.plainPassword, {
+                                'label': 'Mot de passe',
+                                'attr': {'placeholder': 'Votre mot de passe secret'}
+                            }) }}
+                        </div>
+
+
+                        <div class="mb-4">
+                            {{ form_row(registrationForm.agreeTerms, {
+                                'label': 'J\'accepte les conditions d\'utilisation'
+                            }) }}
+                        </div>
+
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                S'inscrire <i class="bi bi-arrow-right-short"></i>
+                            </button>
+                        </div>
+
+                        {{ form_end(registrationForm) }}
+
+
+                    </div>
+
+
+                    <div class="card-footer bg-light text-center py-3">
+                        <p class="mb-0 text-muted">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Se connecter</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
