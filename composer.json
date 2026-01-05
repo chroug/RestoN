@@ -6,54 +6,56 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "doctrine/doctrine-bundle": "^3.1",
-        "doctrine/doctrine-migrations-bundle": "^3.7",
-        "doctrine/orm": "^3.5",
+        "doctrine/doctrine-bundle": "^2.12",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.0",
         "phpdocumentor/reflection-docblock": "^5.6",
-        "phpstan/phpdoc-parser": "^2.3",
-        "symfony/asset": "8.0.*",
-        "symfony/asset-mapper": "8.0.*",
-        "symfony/console": "8.0.*",
-        "symfony/doctrine-messenger": "8.0.*",
-        "symfony/dotenv": "8.0.*",
-        "symfony/expression-language": "8.0.*",
+        "phpstan/phpdoc-parser": "^1.26",
+        "symfony/asset": "7.3.*",
+        "symfony/asset-mapper": "7.3.*",
+        "symfony/console": "7.3.*",
+        "symfony/doctrine-messenger": "7.3.*",
+        "symfony/dotenv": "7.3.*",
+        "symfony/expression-language": "7.3.*",
         "symfony/flex": "^2",
-        "symfony/form": "8.0.*",
-        "symfony/framework-bundle": "8.0.*",
-        "symfony/http-client": "8.0.*",
-        "symfony/intl": "8.0.*",
-        "symfony/mailer": "8.0.*",
-        "symfony/mime": "8.0.*",
-        "symfony/monolog-bundle": "^3.0|^4.0",
-        "symfony/notifier": "8.0.*",
-        "symfony/process": "8.0.*",
-        "symfony/property-access": "8.0.*",
-        "symfony/property-info": "8.0.*",
-        "symfony/runtime": "8.0.*",
-        "symfony/security-bundle": "8.0.*",
-        "symfony/serializer": "8.0.*",
-        "symfony/stimulus-bundle": "^2.31",
-        "symfony/string": "8.0.*",
-        "symfony/translation": "8.0.*",
-        "symfony/twig-bundle": "8.0.*",
-        "symfony/ux-turbo": "^2.31",
-        "symfony/validator": "8.0.*",
-        "symfony/web-link": "8.0.*",
-        "symfony/yaml": "8.0.*",
-        "symfonycasts/verify-email-bundle": "^1.18",
-        "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "symfony/form": "7.3.*",
+        "symfony/framework-bundle": "7.3.*",
+        "symfony/http-client": "7.3.*",
+        "symfony/intl": "7.3.*",
+        "symfony/mailer": "7.3.*",
+        "symfony/mime": "7.3.*",
+        "symfony/monolog-bundle": "^3.10",
+        "symfony/notifier": "7.3.*",
+        "symfony/process": "7.3.*",
+        "symfony/property-access": "7.3.*",
+        "symfony/property-info": "7.3.*",
+        "symfony/runtime": "7.3.*",
+        "symfony/security-bundle": "7.3.*",
+        "symfony/serializer": "7.3.*",
+        "symfony/stimulus-bundle": "^2.16",
+        "symfony/string": "7.3.*",
+        "symfony/translation": "7.3.*",
+        "symfony/twig-bundle": "7.3.*",
+        "symfony/ux-turbo": "^2.16",
+        "symfony/validator": "7.3.*",
+        "symfony/web-link": "7.3.*",
+        "symfony/yaml": "7.3.*",
+        "symfonycasts/verify-email-bundle": "^1.17",
+        "twig/extra-bundle": "^3.0",
+        "twig/twig": "^3.0"
     },
     "config": {
+        "platform": {
+            "php": "8.3.29"
+        },
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
             "symfony/runtime": true
         },
-        "bump-after-update": true,
         "sort-packages": true
     },
     "autoload": {
@@ -75,8 +77,7 @@
         "symfony/polyfill-php80": "*",
         "symfony/polyfill-php81": "*",
         "symfony/polyfill-php82": "*",
-        "symfony/polyfill-php83": "*",
-        "symfony/polyfill-php84": "*"
+        "symfony/polyfill-php83": "*"
     },
     "scripts": {
         "start": "php -d max_execution_time=0 -S 127.0.0.1:8000 -t public",
@@ -84,21 +85,12 @@
         "fix:phpcs": "php-cs-fixer fix --config .php-cs-fixer.dist.php",
         "test:twigcs": "twigcs lint templates --severity error",
         "fix:twigcs": "twig-cs-fixer fix templates",
-        "test:codeception": [
-            "php vendor/bin/codecept clean",
-            "bin/console doctrine:database:drop --force --quiet --env=test",
-            "bin/console doctrine:database:create --quiet --env=test",
-            "bin/console doctrine:schema:create --quiet --env=test",
-            "php vendor/bin/codecept run"
-        ],
-        "db": ["php bin/console doctrine:database:drop --force --if-exists",
-            " php bin/console doctrine:database:create",
+        "db": [
+            "php bin/console doctrine:database:drop --force --if-exists",
+            "php bin/console doctrine:database:create",
             "php bin/console doctrine:migrations:migrate --no-interaction",
-            "php bin/console doctrine:fixtures:load --no-interaction"],
-
-        "test": ["@test:phpcs", "@test:twigcs", "@test:codeception"],
-        "fix": ["@fix:phpcs", "@fix:twigcs"],
-
+            "php bin/console doctrine:fixtures:load --no-interaction"
+        ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
@@ -117,31 +109,18 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "8.0.*"
+            "require": "7.3.*"
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.3",
-        "phpunit/phpunit": "^12.4",
-        "symfony/browser-kit": "8.0.*",
-        "symfony/css-selector": "8.0.*",
-        "symfony/debug-bundle": "8.0.*",
-        "symfony/maker-bundle": "^1.65.1",
-        "symfony/stopwatch": "8.0.*",
-        "symfony/web-profiler-bundle": "8.0.*",
-        "zenstruck/foundry": "^2.8"
-    },
-    "scripts-descriptions": {
-        "start": "demarrage du serveur web",
-        "test:phpcs": "démarrage de la verification du code par php cs fixer",
-        "fix:phpcs": "démarrage de la correction du code par php cs fixer",
-        "test:twigcs": "démarrage de la verification du code par twig cs fixer",
-        "fix:twigcs": "démarrage de la correction du code par php cs fixer",
-        "test": "demarrage des scripts de verification du code par php cs fixer et php twig fixer et codeception",
-        "fix": "demarrage des scripts de correction du code par php cs fixer et php twig fixer",
-    "test:codeception" : "demarrage des tests avec codeception : Nettoyage du répertoire « _output » et du code généré par Codeception, Destruction silencieuse forcée de la base de données, Création silencieuse de la base de données , Création silencieuse du schéma de la base de données , Exécution des tests Codeception   ",
-    "db" : "Destruction forcée de la base de données , Création de la base de données, Application des migrations successives sans questions interactives, Génération des données factices sans questions interactives "
-}
-
-
+        "doctrine/doctrine-fixtures-bundle": "^3.6",
+        "phpunit/phpunit": "^9.6",
+        "symfony/browser-kit": "7.3.*",
+        "symfony/css-selector": "7.3.*",
+        "symfony/debug-bundle": "7.3.*",
+        "symfony/maker-bundle": "^1.60",
+        "symfony/stopwatch": "7.3.*",
+        "symfony/web-profiler-bundle": "7.3.*",
+        "zenstruck/foundry": "^1.37"
+    }
 }
