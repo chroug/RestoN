@@ -38,7 +38,7 @@ final class PlatsFactory extends PersistentObjectFactory
     }
 
     #[\Override]
-    protected function initialize(): PlatsFactory
+    protected function initialize(): static
     {
         return $this;
     }

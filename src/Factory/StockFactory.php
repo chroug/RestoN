@@ -37,7 +37,7 @@ final class StockFactory extends PersistentObjectFactory
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
     #[\Override]
-    protected function initialize(): StockFactory
+    protected function initialize(): static
     {
         return $this
             // ->afterInstantiate(function(Stock $stock): void {})
