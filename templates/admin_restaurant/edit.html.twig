@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer mon Restaurant{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Gérer mon Restaurant 🏪</h1>
+        </div>
+
+        {{ form_start(form) }}
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0 fs-5">📍 Informations</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ form_row(form.nom) }}
+                        {{ form_row(form.adresse) }}
+                        <div class="row">
+                            <div class="col-6">{{ form_row(form.ville) }}</div>
+                            <div class="col-6">{{ form_row(form.codePostal) }}</div>
+                        </div>
+                        {{ form_row(form.telephone) }}
+                        <hr>
+                        {{ form_row(form.nombrePlaces) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="mb-0 fs-5">🕒 Horaires d'ouverture</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                <tr>
+                                    <th style="width: 15%">Jour</th>
+                                    <th style="width: 35%">Midi</th>
+                                    <th style="width: 35%">Soir</th>
+                                    <th style="width: 15%" class="text-center">Fermé</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for horaireField in form.horaires %}
+                                    <tr>
+                                        <td class="fw-bold text-primary">
+                                            {{ form_widget(horaireField.jour) }}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1">
+                                                {{ form_widget(horaireField.ouvertureMidi, {'attr': {'class': 'form-control-sm'}}) }}
+                                                <span class="text-muted">-</span>
+                                                {{ form_widget(horaireField.fermetureMidi, {'attr': {'class': 'form-control-sm'}}) }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1">
+                                                {{ form_widget(horaireField.ouvertureSoir, {'attr': {'class': 'form-control-sm'}}) }}
+                                                <span class="text-muted">-</span>
+                                                {{ form_widget(horaireField.fermetureSoir, {'attr': {'class': 'form-control-sm'}}) }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch d-flex justify-content-center">
+                                                {{ form_widget(horaireField.ferme, {'attr': {'class': 'form-check-input'}}) }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <button type="submit" class="btn btn-success w-100 py-3 fw-bold fs-5 shadow">
+                    💾 Enregistrer les modifications
+                </button>
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
