@@ -8,6 +8,7 @@ use App\Repository\PlatsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -32,7 +33,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/commande/valider', name: 'app_commande_valider')]
-    public function valider(SessionInterface $session, PlatsRepository $platsRepository, EntityManagerInterface $em): Response
+    public function valider(Request $request, SessionInterface $session, PlatsRepository $platsRepository, EntityManagerInterface $em): Response
     {
         if (!$this->getUser()) {
             $this->addFlash('danger', 'Connectez-vous pour commander !');
@@ -50,7 +51,8 @@ class CommandeController extends AbstractController
         $commande->setDate(new \DateTimeImmutable());
         $commande->setStatut(1);
         $commande->setClient($this->getUser());
-        $commande->setAemporter(true);
+        $choix = $request->request->get('type', 'emporter');
+        $commande->setAemporter($choix === 'emporter');
         $commande->setNumeroTable(0);
 
         $total = 0;
