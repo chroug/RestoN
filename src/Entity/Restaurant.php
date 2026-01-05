@@ -18,30 +18,30 @@ class Restaurant
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $ville = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $codePostal = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $estOuvert = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nombrePlaces = null;
-
-    #[ORM\OneToMany(targetEntity: Horaire::class, mappedBy: 'restaurant', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $horaires;
-
+    /**
+     * @var Collection<int, Plats>
+     */
     #[ORM\OneToMany(targetEntity: Plats::class, mappedBy: 'restaurant')]
     private Collection $plats;
 
+    /**
+     * @var Collection<int, Commande>
+     */
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'restaurant')]
     private Collection $commandes;
 
@@ -55,7 +55,6 @@ class Restaurant
     {
         $this->plats = new ArrayCollection();
         $this->commandes = new ArrayCollection();
-        $this->horaires = new ArrayCollection();
         $this->avis = new ArrayCollection();
     }
 
@@ -72,6 +71,7 @@ class Restaurant
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
@@ -80,9 +80,10 @@ class Restaurant
         return $this->adresse;
     }
 
-    public function setAdresse(?string $adresse): static
+    public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
+
         return $this;
     }
 
@@ -91,9 +92,10 @@ class Restaurant
         return $this->ville;
     }
 
-    public function setVille(?string $ville): static
+    public function setVille(string $ville): static
     {
         $this->ville = $ville;
+
         return $this;
     }
 
@@ -102,9 +104,10 @@ class Restaurant
         return $this->codePostal;
     }
 
-    public function setCodePostal(?string $codePostal): static
+    public function setCodePostal(string $codePostal): static
     {
         $this->codePostal = $codePostal;
+
         return $this;
     }
 
@@ -113,9 +116,10 @@ class Restaurant
         return $this->telephone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
+
         return $this;
     }
 
@@ -124,47 +128,10 @@ class Restaurant
         return $this->estOuvert;
     }
 
-    public function setEstOuvert(?string $estOuvert): static
+    public function setEstOuvert(string $estOuvert): static
     {
         $this->estOuvert = $estOuvert;
-        return $this;
-    }
 
-    public function getNombrePlaces(): ?int
-    {
-        return $this->nombrePlaces;
-    }
-
-    public function setNombrePlaces(?int $nombrePlaces): static
-    {
-        $this->nombrePlaces = $nombrePlaces;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Horaire>
-     */
-    public function getHoraires(): Collection
-    {
-        return $this->horaires;
-    }
-
-    public function addHoraire(Horaire $horaire): static
-    {
-        if (!$this->horaires->contains($horaire)) {
-            $this->horaires->add($horaire);
-            $horaire->setRestaurant($this);
-        }
-        return $this;
-    }
-
-    public function removeHoraire(Horaire $horaire): static
-    {
-        if ($this->horaires->removeElement($horaire)) {
-            if ($horaire->getRestaurant() === $this) {
-                $horaire->setRestaurant(null);
-            }
-        }
         return $this;
     }
 
@@ -182,16 +149,19 @@ class Restaurant
             $this->plats->add($plat);
             $plat->setRestaurant($this);
         }
+
         return $this;
     }
 
     public function removePlat(Plats $plat): static
     {
         if ($this->plats->removeElement($plat)) {
+            // set the owning side to null (unless already changed)
             if ($plat->getRestaurant() === $this) {
                 $plat->setRestaurant(null);
             }
         }
+
         return $this;
     }
 
@@ -209,6 +179,7 @@ class Restaurant
             $this->commandes->add($commande);
             $commande->setRestaurant($this);
         }
+
         return $this;
     }
 
@@ -220,6 +191,7 @@ class Restaurant
                 $commande->setRestaurant(null);
             }
         }
+
         return $this;
     }
 
@@ -237,6 +209,7 @@ class Restaurant
             $this->avis->add($avi);
             $avi->setRestaurant($this);
         }
+
         return $this;
     }
 
@@ -248,12 +221,13 @@ class Restaurant
                 $avi->setRestaurant(null);
             }
         }
+
         return $this;
     }
-
     public function getNoteMoyenne(): ?float
     {
         $avis = $this->getAvis();
+
 
         if ($avis->isEmpty()) {
             return null;
