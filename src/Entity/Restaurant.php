@@ -45,10 +45,17 @@ class Restaurant
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'restaurant')]
     private Collection $commandes;
 
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'restaurant')]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,5 +193,50 @@ class Restaurant
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getRestaurant() === $this) {
+                $avi->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+    public function getNoteMoyenne(): ?float
+    {
+        $avis = $this->getAvis();
+
+
+        if ($avis->isEmpty()) {
+            return null;
+        }
+
+        $total = 0;
+        foreach ($avis as $unAvis) {
+            $total += $unAvis->getNote();
+        }
+        return round($total / count($avis), 1);
     }
 }
