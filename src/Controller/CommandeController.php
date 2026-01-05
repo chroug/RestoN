@@ -50,15 +50,29 @@ class CommandeController extends AbstractController
         $commande->setDate(new \DateTimeImmutable());
         $commande->setStatut(1);
         $commande->setClient($this->getUser());
+        $commande->setAemporter(true);
+        $commande->setNumeroTable(0);
+
+        $restaurantTrouve = null;
 
         foreach ($panier as $id => $quantite) {
             $plat = $platsRepository->find($id);
 
             if ($plat) {
+                if (!$restaurantTrouve && $plat->getRestaurant()) {
+                    $restaurantTrouve = $plat->getRestaurant();
+                    $commande->setRestaurant($restaurantTrouve);
+                }
+
                 for ($i = 0; $i < $quantite; $i++) {
                     $commande->addPlat($plat);
                 }
             }
+        }
+
+        if (!$commande->getRestaurant()) {
+            $this->addFlash('danger', 'Impossible de valider : aucun restaurant identifié.');
+            return $this->redirectToRoute('app_home');
         }
 
         $em->persist($commande);
