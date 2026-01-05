@@ -13,7 +13,6 @@
                 <th>Description</th>
                 <th>Prix</th>
                 <th>Restaurant</th>
-                <th>Ingrédients</th>
                 <th>Ajouter au panier</th>
             </tr>
             </thead>
@@ -38,14 +37,6 @@
                     <td>{{ plat.prix }} €</td>
 
                     <td>{{ plat.restaurant.nom }}</td>
-                    <td>
-
-                        {% for ingredient in plat.ingredients %}
-                            <span style="background: #eee; padding: 2px 5px; border-radius: 4px;">
-                                {{ ingredient.nom }}
-                            </span>
-                        {% endfor %}
-                    </td>
                     <td>
                     <a href="{{ path('cart_add', {'id': plat.id}) }}"
                        style="background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 5px;">
