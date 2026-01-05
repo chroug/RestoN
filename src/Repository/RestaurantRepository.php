@@ -16,6 +16,20 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
+    /**
+     * Recherche les restaurants par leur nom
+     * @return Restaurant[]
+     */
+    public function findBySearch(string $search): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.nom LIKE :val')
+            ->setParameter('val', '%' . $search . '%')
+            ->orderBy('r.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Restaurant[] Returns an array of Restaurant objects
     //     */
