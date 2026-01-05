@@ -2,6 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Client;
+use App\Entity\Gerant;
+use App\Entity\Serveur;
 use App\Factory\StockFactory;
 use App\Factory\ClientFactory;
 use App\Factory\CommandeFactory;
@@ -12,14 +15,29 @@ use App\Factory\RestaurantFactory;
 use App\Factory\ServeurFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $hasher;
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
+
+        $passwordGerant = $this->hasher->hashPassword(new Gerant(), 'password');
+        $passwordServeur = $this->hasher->hashPassword(new Serveur(), 'password');
+        $passwordClient = $this->hasher->hashPassword(new Client(), 'password');
+
+        StockFactory::createMany(20);
+
+
         $gerant = GerantFactory::createOne([
             'email' => 'admin@resto.com',
-            'password' => 'password',
+            'password' => $passwordGerant,
             'nom' => 'Patron',
             'prenom' => 'Chef',
             'roles' => ['ROLE_GERANT']
@@ -34,8 +52,9 @@ class AppFixtures extends Fixture
             'restaurant' => $resto,
         ]);
 
-        ServeurFactory::createMany(3, ['password' => 'password']);
-        ClientFactory::createMany(10, ['password' => 'password']);
+
+        ServeurFactory::createMany(3, ['password' => $passwordServeur]);
+        ClientFactory::createMany(10, ['password' => $passwordClient]);
 
         $commandes = CommandeFactory::createMany(20, [
             'restaurant' => $resto,
@@ -49,7 +68,5 @@ class AppFixtures extends Fixture
                 'plat' => PlatsFactory::random(),
             ]);
         }
-
-        StockFactory::createMany(10);
     }
 }
