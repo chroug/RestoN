@@ -4,17 +4,13 @@ namespace App\Factory;
 
 use App\Entity\Plats;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
+use FakerRestaurant\Provider\fr_FR\Restaurant;
 
 /**
  * @extends PersistentObjectFactory<Plats>
  */
 final class PlatsFactory extends PersistentObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
     public function __construct()
     {
     }
@@ -25,29 +21,25 @@ final class PlatsFactory extends PersistentObjectFactory
         return Plats::class;
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
     #[\Override]
+    /** @var Restaurant $faker */
     protected function defaults(): array|callable
     {
+        $faker = self::faker();
+        $faker->addProvider(new Restaurant($faker));
+
         return [
-            'nom' => self::faker()->words(3, true),
-            'prix' => self::faker()->randomFloat(2, 9, 25),
+
+            'nom' => $faker->foodName(),
+
+            'prix' => $faker->randomFloat(2, 9, 25),
             'restaurant' => RestaurantFactory::new(),
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     #[\Override]
-    protected function initialize(): static
+    protected function initialize(): PlatsFactory
     {
-        return $this
-            // ->afterInstantiate(function(Plats $plats): void {})
-        ;
+        return $this;
     }
 }
