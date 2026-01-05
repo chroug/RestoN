@@ -2,95 +2,82 @@
 
 {% block title %}Inscription - RestoN{% endblock %}
 
-{% block body %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card shadow-sm border-0 rounded-3">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                <i class="bi bi-person-plus-fill fs-3"></i>
-                            </div>
-                            <h2 class="fw-bold">Créer un compte</h2>
-                            <p class="text-muted">Rejoignez la communauté RestoN</p>
-                        </div>
+{% block stylesheets %}
+    <style>
+        body {
+            overflow: hidden;
+        }
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding-bottom: 20px;
+        }
+    </style>
+{% endblock %}
 
+{% block body %}
+    <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-md-6 col-lg-5">
+
+                <div class="card shadow-sm border-0 rounded-3" style="max-height: 85vh;">
+                    <div class="card-body p-4 overflow-auto">
+                        <div class="text-center mb-3">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
+                                <i class="bi bi-person-plus-fill fs-4"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">Créer un compte</h3>
+                        </div>
                         {% for flash_error in app.flashes('verify_email_error') %}
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger py-2 small" role="alert">
                                 <i class="bi bi-exclamation-triangle-fill"></i> {{ flash_error }}
                             </div>
                         {% endfor %}
                         {{ form_start(registrationForm) }}
-
                         {% if not registrationForm.vars.valid %}
-                            <div class="alert alert-danger">
+                            <div class="alert alert-danger py-2 small">
                                 {{ form_errors(registrationForm) }}
                             </div>
                         {% endif %}
-
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(registrationForm.nom, {
-                                    'label': 'Nom',
-                                    'attr': {'placeholder': 'Votre nom'}
-                                }) }}
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                {{ form_row(registrationForm.nom, {'label': false, 'attr': {'placeholder': 'Nom', 'class': 'form-control-sm'}}) }}
                             </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_row(registrationForm.prenom, {
-                                    'label': 'Prénom',
-                                    'attr': {'placeholder': 'Votre prénom'}
-                                }) }}
+                            <div class="col-6">
+                                {{ form_row(registrationForm.prenom, {'label': false, 'attr': {'placeholder': 'Prénom', 'class': 'form-control-sm'}}) }}
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            {{ form_row(registrationForm.telephone, {
-                                'label': 'Téléphone (optionnel)',
-                                'attr': {'placeholder': '06 12 34 56 78'}
-                            }) }}
+                        <div class="mb-2">
+                            {{ form_row(registrationForm.telephone, {'label': false, 'attr': {'placeholder': 'Téléphone', 'class': 'form-control-sm'}}) }}
+                        </div>
+                        <hr class="my-2 opacity-25">
+                        <div class="mb-2">
+                            {{ form_row(registrationForm.email, {'label': false, 'attr': {'placeholder': 'Email', 'class': 'form-control-sm'}}) }}
                         </div>
 
-                        <hr class="my-4 text-muted opacity-25">
-
-
-                        <div class="mb-3">
-                            {{ form_row(registrationForm.email, {
-                                'label': 'Adresse Email',
-                                'attr': {'placeholder': 'exemple@email.com'}
-                            }) }}
+                        <div class="mb-2">
+                            {{ form_row(registrationForm.plainPassword, {'label': false, 'attr': {'placeholder': 'Mot de passe', 'class': 'form-control-sm'}}) }}
                         </div>
 
-                        <div class="mb-3">
-                            {{ form_row(registrationForm.plainPassword, {
-                                'label': 'Mot de passe',
-                                'attr': {'placeholder': 'Votre mot de passe secret'}
-                            }) }}
+                        <div class="mb-3 small">
+                            {{ form_row(registrationForm.agreeTerms) }}
                         </div>
-
-
-                        <div class="mb-4">
-                            {{ form_row(registrationForm.agreeTerms, {
-                                'label': 'J\'accepte les conditions d\'utilisation'
-                            }) }}
-                        </div>
-
 
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="btn btn-primary">
                                 S'inscrire <i class="bi bi-arrow-right-short"></i>
                             </button>
                         </div>
 
                         {{ form_end(registrationForm) }}
 
-
                     </div>
 
-
-                    <div class="card-footer bg-light text-center py-3">
-                        <p class="mb-0 text-muted">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Se connecter</a></p>
+                    <div class="card-footer bg-light text-center py-2">
+                        <p class="mb-0 small text-muted">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Se connecter</a></p>
                     </div>
 
                 </div>
