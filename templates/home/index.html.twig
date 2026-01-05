@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Le Gourmet Symfony{% endblock %}
+
+{% block body %}
+
+    {# --- STYLE CSS SPÉCIFIQUE POUR CETTE PAGE --- #}
+    <style>
+        .hero-section {
+            /* Image de fond (tu pourras la changer par une image locale plus tard) */
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 80vh; /* 80% de la hauteur de l'écran */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Un voile noir pour que le texte soit lisible sur l'image */
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #198754; /* Vert success bootstrap */
+            margin-bottom: 1rem;
+        }
+    </style>
+
+    {# --- 1. HERO HEADER (L'accueil impactant) --- #}
+    <header class="hero-section mb-5">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="display-3 fw-bold mb-3">Le Goût de l'Excellence</h1>
+            <p class="lead fs-4 mb-4">Des plats préparés avec passion, livrés chez vous ou à déguster sur place.</p>
+
+            <div class="d-flex gap-3 justify-content-center">
+                {# Lien vers la liste des restaurants #}
+                <a href="{{ path('app_restaurants') }}" class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold">
+                    Commander maintenant <i class="fas fa-utensils ms-2"></i>
+                </a>
+
+                {# Lien vers le panier (optionnel) #}
+                <a href="{{ path('cart_index') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                    Mon Panier
+                </a>
+            </div>
+        </div>
+    </header>
+
+    {# --- 2. POURQUOI NOUS CHOISIR ? --- #}
+    <section class="container mb-5 py-5">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="card-body">
+                        <i class="fas fa-leaf feature-icon"></i>
+                        <h3 class="h4">Produits Frais</h3>
+                        <p class="text-muted">Nous travaillons uniquement avec des producteurs locaux pour garantir une fraîcheur incomparable.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="card-body">
+                        <i class="fas fa-shipping-fast feature-icon"></i>
+                        <h3 class="h4">Livraison Rapide</h3>
+                        <p class="text-muted">Vos plats préférés arrivent chauds et prêts à être dégustés en moins de 30 minutes.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="card-body">
+                        <i class="fas fa-star feature-icon"></i>
+                        <h3 class="h4">Qualité Chef</h3>
+                        <p class="text-muted">Nos recettes sont élaborées par des chefs passionnés pour éveiller vos papilles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# --- 3. APPEL À L'ACTION SECONDAIRE --- #}
+    <section class="bg-light py-5 mb-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="fw-bold">Envie de découvrir nos restaurants ?</h2>
+                    <p class="fs-5 text-muted">Explorez notre sélection de restaurants partenaires et trouvez le plat qui vous fera plaisir aujourd'hui.</p>
+                    <a href="{{ path('app_restaurants') }}" class="btn btn-dark btn-lg mt-3">
+                        Voir tous les restaurants
+                    </a>
+                </div>
+                <div class="col-md-6 mt-4 mt-md-0">
+                    {# Image illustrative (burger ou autre) #}
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                         alt="Burger délicieux"
+                         class="img-fluid rounded shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
