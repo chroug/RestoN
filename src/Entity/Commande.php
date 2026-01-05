@@ -50,6 +50,9 @@ class Commande
     #[ORM\ManyToMany(targetEntity: Plats::class, inversedBy: 'commandes')]
     private Collection $plats;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $total = null;
+
     public function __construct()
     {
         $this->ligneCommandes = new ArrayCollection();
@@ -195,6 +198,18 @@ class Commande
     public function removePlat(Plats $plat): static
     {
         $this->plats->removeElement($plat);
+
+        return $this;
+    }
+
+    public function getTotal(): ?float
+    {
+        return $this->total;
+    }
+
+    public function setTotal(?float $total): static
+    {
+        $this->total = $total;
 
         return $this;
     }

@@ -4,7 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Plats;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
-use FakerRestaurant\Provider\fr_FR\Restaurant;
+use FakerRestaurant\Provider\fr_FR\Restaurant as RestaurantProvider;
 
 /**
  * @extends PersistentObjectFactory<Plats>
@@ -26,7 +26,7 @@ final class PlatsFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         $faker = self::faker();
-        $faker->addProvider(new Restaurant($faker));
+        $faker->addProvider(new RestaurantProvider($faker));
 
         return [
 
