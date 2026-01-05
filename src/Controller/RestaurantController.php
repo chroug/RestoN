@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Restaurant;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -13,10 +14,19 @@ class RestaurantController extends AbstractController
 {
 
     #[Route('/', name: 'app_restaurants')]
-    public function index(RestaurantRepository $restaurantRepository): Response
+    public function index(RestaurantRepository $restaurantRepository, Request $request): Response
     {
+        $searchTerm = $request->query->get('q');
+
+        if ($searchTerm) {
+            $restaurants = $restaurantRepository->findBySearch($searchTerm);
+        } else {
+            $restaurants = $restaurantRepository->findAll();
+        }
+
         return $this->render('restaurant/index.html.twig', [
-            'restaurants' => $restaurantRepository->findAll(),
+            'restaurants' => $restaurants,
+            'searchTerm' => $searchTerm,
         ]);
     }
 
