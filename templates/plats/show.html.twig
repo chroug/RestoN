@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ plat.nom }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0">
+                <div class="card-body p-0 ps-md-4">
+
+                    {# Badge Catégorie #}
+                    {% if plat.category %}
+                    <span class="badge bg-primary mb-2">{{ plat.category.name }}</span>
+                    {% endif %}
+
+                    {# Nom du plat #}
+                    <h1 class="display-5 fw-bold">{{ plat.nom }}</h1>
+
+                    {# Restaurant #}
+                    <p class="text-muted mb-4">
+                        Proposé par : <strong>{{ plat.restaurant.nom }}</strong>
+                    </p>
+
+                    {# Description #}
+                    <h5 class="text-dark">Description</h5>
+                    <p class="lead fs-6 text-secondary">
+                        {{ plat.description|default('Aucune description pour ce plat.') }}
+                    </p>
+
+                    <hr class="my-4">
+
+                    {# PRIX et STOCK #}
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <span class="fs-2 fw-bold text-success">{{ plat.prix }} €</span>
+                        </div>
+
+                        {# Calcul du stock total #}
+                        {% set stockTotal = 0 %}
+                        {% for stock in plat.platsStocks %}
+                        {% set stockTotal = stockTotal + stock.quantite %}
+                        {% endfor %}
+
+                        <div>
+                            {% if stockTotal > 0 %}
+                            <span class="badge bg-success p-2">En stock ({{ stockTotal }})</span>
+                            {% else %}
+                            <span class="badge bg-danger p-2">Rupture de stock</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
