@@ -44,9 +44,16 @@ class Commande
     #[ORM\OneToMany(targetEntity: LigneCommande::class, mappedBy: 'commande')]
     private Collection $ligneCommandes;
 
+    /**
+     * @var Collection<int, Plats>
+     */
+    #[ORM\ManyToMany(targetEntity: Plats::class, inversedBy: 'commandes')]
+    private Collection $plats;
+
     public function __construct()
     {
         $this->ligneCommandes = new ArrayCollection();
+        $this->plats = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +171,30 @@ class Commande
                 $ligneCommande->setCommande(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Plats>
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plats $plat): static
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plats $plat): static
+    {
+        $this->plats->removeElement($plat);
 
         return $this;
     }
