@@ -4,14 +4,12 @@
 
 {% block body %}
 
-    {# --- STYLE CSS SPÉCIFIQUE POUR CETTE PAGE --- #}
     <style>
         .hero-section {
-            /* Image de fond (tu pourras la changer par une image locale plus tard) */
             background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
-            height: 80vh; /* 80% de la hauteur de l'écran */
+            height: 80vh;
             position: relative;
             display: flex;
             align-items: center;
@@ -19,7 +17,6 @@
             color: white;
         }
 
-        /* Un voile noir pour que le texte soit lisible sur l'image */
         .hero-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -35,12 +32,11 @@
 
         .feature-icon {
             font-size: 3rem;
-            color: #198754; /* Vert success bootstrap */
+            color: #198754;
             margin-bottom: 1rem;
         }
     </style>
 
-    {# --- 1. HERO HEADER (L'accueil impactant) --- #}
     <header class="hero-section mb-5">
         <div class="hero-overlay"></div>
         <div class="hero-content container">
@@ -48,20 +44,22 @@
             <p class="lead fs-4 mb-4">Des plats préparés avec passion, livrés chez vous ou à déguster sur place.</p>
 
             <div class="d-flex gap-3 justify-content-center">
-                {# Lien vers la liste des restaurants #}
                 <a href="{{ path('app_restaurants') }}" class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold">
                     Commander maintenant <i class="fas fa-utensils ms-2"></i>
                 </a>
-
-                {# Lien vers le panier (optionnel) #}
-                <a href="{{ path('cart_index') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
-                    Mon Panier
-                </a>
+                {% if app.user %}
+                    <a href="{{ path('cart_index') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                        Mon Panier
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
+                        Mon Panier
+                    </a>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    {# --- 2. POURQUOI NOUS CHOISIR ? --- #}
     <section class="container mb-5 py-5">
         <div class="row text-center g-4">
             <div class="col-md-4">
@@ -94,7 +92,6 @@
         </div>
     </section>
 
-    {# --- 3. APPEL À L'ACTION SECONDAIRE --- #}
     <section class="bg-light py-5 mb-5">
         <div class="container">
             <div class="row align-items-center">
@@ -106,7 +103,6 @@
                     </a>
                 </div>
                 <div class="col-md-6 mt-4 mt-md-0">
-                    {# Image illustrative (burger ou autre) #}
                     <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                          alt="Burger délicieux"
                          class="img-fluid rounded shadow-lg">
