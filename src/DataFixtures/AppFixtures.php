@@ -27,20 +27,21 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-
+        // Préparation des mots de passe
         $passwordGerant = $this->hasher->hashPassword(new Gerant(), 'password');
         $passwordServeur = $this->hasher->hashPassword(new Serveur(), 'password');
         $passwordClient = $this->hasher->hashPassword(new Client(), 'password');
 
         StockFactory::createMany(20);
 
-
+        // 1. Gérant
         $gerant = GerantFactory::createOne([
             'email' => 'admin@resto.com',
             'password' => $passwordGerant,
             'nom' => 'Patron',
             'prenom' => 'Chef',
-            'roles' => ['ROLE_GERANT']
+            'roles' => ['ROLE_GERANT'],
+            'isVerified' => true
         ]);
 
         $resto = RestaurantFactory::createOne([
@@ -52,9 +53,17 @@ class AppFixtures extends Fixture
             'restaurant' => $resto,
         ]);
 
+        // 2. Serveurs
+        ServeurFactory::createMany(3, [
+            'password' => $passwordServeur,
+            'isVerified' => true
+        ]);
 
-        ServeurFactory::createMany(3, ['password' => $passwordServeur]);
-        ClientFactory::createMany(10, ['password' => $passwordClient]);
+        // 3. Clients
+        ClientFactory::createMany(10, [
+            'password' => $passwordClient,
+            'isVerified' => true
+        ]);
 
         $commandes = CommandeFactory::createMany(20, [
             'restaurant' => $resto,
