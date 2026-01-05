@@ -52,9 +52,26 @@
                             <p class="text-muted small mb-3 flex-grow-1">
                                 <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
                             </p>
+                            <h3 class="card-title">{{ restaurant.nom }}</h3>
+
+                            <div class="mb-3">
+                                {% if restaurant.avis|length > 0 %}
+
+                                    <span class="text-warning fw-bold fs-5">
+            {{ restaurant.noteMoyenne }}/5 ★
+        </span>
+                                    <span class="text-muted small">({{ restaurant.avis|length }} avis)</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark border">Nouveau</span>
+                                {% endif %}
+                            </div>
 
                             <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 fw-bold">
                                 Voir la carte <i class="bi bi-arrow-right"></i>
+                            </a>
+
+                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary w-100">
+                                Voir les avis <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>
