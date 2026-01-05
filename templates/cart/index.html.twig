@@ -45,9 +45,29 @@
                 <a href="{{ path('app_restaurant_show', {'id': items[0].plat.restaurant.id}) }}"
                    class="btn btn-outline-secondary">Continuer mes achats</a>
 
-                <a href="{{ path('app_commande_valider') }}" class="btn btn-success">
-                    Valider la commande
-                </a>
+                <form action="{{ path('app_commande_valider') }}" method="post">
+
+                    <div class="d-flex align-items-center justify-content-end mb-3">
+                        <label class="me-3 fw-bold">Type de commande :</label>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="type" id="emporter" value="emporter" checked>
+                            <label class="form-check-label" for="emporter">À emporter</label>
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="type" id="surplace" value="surplace">
+                            <label class="form-check-label" for="surplace">Sur place</label>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            Valider la commande
+                        </button>
+                    </div>
+
+                </form>
             </div>
 
         {% else %}
