@@ -54,7 +54,7 @@ class CartController extends AbstractController
 
         if (!$user instanceof Client) {
             $this->addFlash('danger', 'Vous devez être un client pour passer commande.');
-            return $this->redirectToRoute('app_plats');
+            return $this->redirectToRoute('app_home');
         }
         $commande->setClient($user);
         $premierArticle = $panier[0];
@@ -83,6 +83,6 @@ class CartController extends AbstractController
 
         $this->addFlash('success', 'Commande validée ! Le restaurant va la préparer.');
 
-        return $this->redirectToRoute('app_plats');
+        return $this->redirectToRoute('app_home');
     }
 }

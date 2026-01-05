@@ -62,7 +62,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
         } else {
             // du coup redirection pour le client vers le splats
-            return new RedirectResponse($this->urlGenerator->generate('app_plats'));
+            return new RedirectResponse($this->urlGenerator->generate('app_home'));
         }
 
     }
