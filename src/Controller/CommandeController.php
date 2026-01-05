@@ -53,6 +53,7 @@ class CommandeController extends AbstractController
         $commande->setAemporter(true);
         $commande->setNumeroTable(0);
 
+        $total = 0;
         $restaurantTrouve = null;
 
         foreach ($panier as $id => $quantite) {
@@ -64,11 +65,14 @@ class CommandeController extends AbstractController
                     $commande->setRestaurant($restaurantTrouve);
                 }
 
+                $total += $plat->getPrix() * $quantite;
                 for ($i = 0; $i < $quantite; $i++) {
                     $commande->addPlat($plat);
                 }
             }
         }
+
+        $commande->setTotal($total);
 
         if (!$commande->getRestaurant()) {
             $this->addFlash('danger', 'Impossible de valider : aucun restaurant identifié.');
