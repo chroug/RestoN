@@ -2,11 +2,11 @@
 
 namespace App\Factory;
 
-use App\Entity\Stock;
+use App\Entity\PlatsStock;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Stock>
+ * @extends PersistentObjectFactory<PlatsStock>
  */
 final class StockFactory extends PersistentObjectFactory
 {
@@ -23,7 +23,7 @@ final class StockFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return Stock::class;
+        return PlatsStock::class;
     }
 
     /**
@@ -37,7 +37,7 @@ final class StockFactory extends PersistentObjectFactory
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */
     #[\Override]
-    protected function initialize(): static
+    protected function initialize(): StockFactory
     {
         return $this
             // ->afterInstantiate(function(Stock $stock): void {})
@@ -47,9 +47,8 @@ final class StockFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'nom' => self::faker()->word(),
-            'quantite' => self::faker()->randomFloat(2, 0, 100),
-            'unite' => self::faker()->randomElement(['kg', 'L', 'pcs']),
+            'plat' => PlatsFactory::new(),
+            'quantite' => self::faker()->numberBetween(0, 50),
         ];
     }
 }
