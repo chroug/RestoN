@@ -29,11 +29,11 @@
 
                         <td>
                             {% if commande.statut == 1 %}
-                                <span class="badge bg-success">Validée</span>
+                                <span class="badge bg-warning text-dark">En attente de préparation</span>
                             {% elseif commande.statut == 2 %}
-                                <span class="badge bg-info">Prête</span>
+                                <span class="badge bg-primary">Prête</span>
                             {% else %}
-                                <span class="badge bg-warning text-dark">En attente</span>
+                                <span class="badge bg-success">Terminée</span>
                             {% endif %}
                         </td>
 

@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Serveur{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Espace Serveur - Commandes</h1>
+
+        <table class="table table-hover table-bordered shadow-sm">
+            <thead class="table-dark">
+            <tr>
+                <th>Heure</th>
+                <th>Client</th>
+                <th>Type</th>
+                <th>Plats</th>
+                <th>Total</th>
+                <th>Action (État)</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.date|date('H:i') }} <br> <small class="text-muted">{{ commande.date|date('d/m') }}</small></td>
+
+                    <td>
+                        {{ commande.client.email }}
+                    </td>
+
+                    <td class="text-center">
+                        {% if commande.aemporter %}
+                            <span class="badge bg-warning text-dark">À emporter</span>
+                        {% else %}
+                            <span class="badge bg-primary">Sur place</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <ul class="mb-0 small">
+                            {% for plat in commande.plats %}
+                                <li>{{ plat.nom }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+
+                    <td class="fw-bold">
+                        {{ commande.total }} €
+                    </td>
+
+                    <td class="text-center">
+                        {% if commande.statut == 1 %}
+                            <span class="badge bg-danger mb-2">À préparer</span><br>
+                            <a href="{{ path('app_serveur_changer_etat', {'id': commande.id, 'etat': 2}) }}"
+                               class="btn btn-sm btn-outline-warning">Servir
+                            </a>
+
+                        {% elseif commande.statut == 2 %}
+                            <span class="badge bg-warning text-dark mb-2">En cours de repas</span><br>
+                            <a href="{{ path('app_serveur_changer_etat', {'id': commande.id, 'etat': 3}) }}"
+                               class="btn btn-sm btn-success">Encaisser
+                            </a>
+
+                        {% elseif commande.statut == 3 %}
+                            <span class="badge bg-success">Terminée</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="text-center">Aucune commande en cours.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

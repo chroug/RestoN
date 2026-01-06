@@ -90,4 +90,26 @@ class CommandeController extends AbstractController
 
         return $this->redirectToRoute('app_mes_commandes');
     }
+
+    #[Route('/espace-serveur', name: 'app_serveur_commandes')]
+    #[IsGranted('ROLE_SERVEUR', message: "Vous n'êtes pas serveur !")]
+    public function espaceServeur(CommandeRepository $commandeRepository): Response
+    {
+        $commandes = $commandeRepository->findBy([], ['date' => 'DESC']);
+
+        return $this->render('commande/serveur.html.twig', [
+            'commandes' => $commandes,
+        ]);
+    }
+
+    #[Route('/serveur/commande/{id}/etat/{etat}', name: 'app_serveur_changer_etat')]
+    #[IsGranted('ROLE_SERVEUR')]
+    public function changerEtat(Commande $commande, int $etat, EntityManagerInterface $em): Response
+    {
+        $commande->setStatut($etat);
+        $em->flush();
+        $this->addFlash('success', 'Statut de la commande mis à jour !');
+
+        return $this->redirectToRoute('app_serveur_commandes');
+    }
 }
