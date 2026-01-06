@@ -74,6 +74,7 @@
                 <a href="{{ path('app_restaurants') }}" class="alert-link mt-2 d-inline-block">Voir tous les restaurants</a>
             </div>
         {% endif %}
+        <h1 class="text-center mb-5 fw-bold">Nos Restaurants Partenaires</h1>
 
         <div class="row">
             {% for restaurant in restaurants %}
@@ -94,6 +95,12 @@
 
                             <p class="text-muted small mb-3 flex-grow-1">
                                 <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
+                                {% if restaurant.nombrePlaces %}
+                                    <br>
+                                    <span class="badge bg-secondary mt-1">
+                                        <i class="bi bi-people-fill"></i> {{ restaurant.nombrePlaces }} places
+                                    </span>
+                                {% endif %}
                             </p>
                             <h3 class="card-title">{{ restaurant.nom }}</h3>
 
@@ -108,6 +115,15 @@
                                     <span class="badge bg-light text-dark border">Nouveau</span>
                                 {% endif %}
                             </div>
+
+                            {# 👇 BOUTON ADMIN : Visible uniquement pour le Gérant 👇 #}
+                            {% if is_granted('ROLE_GERANT') %}
+                                <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
+                                   class="btn btn-warning w-100 fw-bold mb-2 shadow-sm">
+                                    <i class="bi bi-pencil-square"></i> Modifier le Restaurant
+                                </a>
+                            {% endif %}
+                            {# 👆 FIN ZONE ADMIN 👆 #}
 
                             <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 fw-bold">
                                 Voir la carte <i class="bi bi-arrow-right"></i>
