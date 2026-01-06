@@ -3,102 +3,156 @@
 {% block title %}Carte - {{ restaurant.nom }}{% endblock %}
 
 {% block body %}
-    <div class="container" style="margin-top: 30px;">
+    <div class="container-fluid px-4" style="margin-top: 30px;">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Carte : {{ restaurant.nom }}</h1>
-            <a href="{{ path('app_restaurants') }}" class="btn btn-outline-secondary"> Changer de restaurant</a>
-        </div>
-
-        {# 1. La rangée pour les PLATS #}
         <div class="row">
-            {% for plat in plats %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        {# GESTION IMAGE #}
-                        {# {% if plat.image %}
-                            <img src="{{ asset('uploads/images/' ~ plat.image) }}" class="card-img-top" alt="{{ plat.nom }}" style="height: 200px; object-fit: cover;">
-                        {% endif %} #}
 
-                        <div class="card-body d-flex flex-column">
-                            {% if plat.category %}
-                                <span class="badge bg-primary mb-2">
-                                    {{ plat.category.name }}
-                                </span>
-                            {% endif %}
-                            <h5 class="card-title">
-                                <a href="{{ path('app_plat_show', {'id': plat.id}) }}" class="text-decoration-none text-dark">
-                                    {{ plat.nom }}
-                                </a>
-                            </h5>
 
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="h4 text-primary mb-0">{{ plat.prix }} €</span>
+            <div class="col-md-2 d-none d-md-block">
+                <div class="sticky-top" style="top: 20px;">
+                    <div class="card shadow-sm border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-basket"></i> Mon Panier</h5>
+                        </div>
+                        <div class="card-body">
+                            {# ICI : Idéalement, il faut faire un {{ render(controller('App\\Controller\\CartController::summary')) }} #}
+                            {# Pour l'instant, je mets du faux texte pour respecter ton dessin #}
+                            <p class="small text-muted">Votre panier est vide pour le moment.</p>
 
-                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-success">
-                                    Ajouter
-                                </a>
+                            <hr>
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total</span>
+                                <span>0.00 €</span>
                             </div>
+                        </div>
+                        <div class="card-footer p-2">
+                            <a href="{{ path('cart_index') }}" class="btn btn-success w-100">
+                                PAYER
+                            </a>
                         </div>
                     </div>
                 </div>
-                {# J'AI SUPPRIMÉ LE <hr class="my-5"> ICI #}
+            </div>
 
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info">Ce restaurant n'a pas encore ajouté de plats.</div>
+
+            <div class="col-md-7">
+
+
+                <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+                    <h1 class="h2 m-0">Carte : {{ restaurant.nom }}</h1>
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Changer
+                    </a>
                 </div>
-            {% endfor %}
-        </div>
-        {# Fin de la row des plats #}
 
-        {# 2. La section AVIS (en dehors de la boucle des plats pour être propre) #}
-        <hr class="my-5"> {# Celui-ci est utile pour séparer les plats des avis #}
 
-        <div id="section-avis" class="row">
-            <div class="col-md-10 mx-auto">
+                <div class="row">
+                    {% for plat in plats %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="card-title fw-bold">{{ plat.nom }}</h5>
+                                        <span class="text-primary fw-bold">{{ plat.prix }} €</span>
+                                    </div>
+                                    <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Délicieux plat fait maison.') }}</p>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3>Avis des clients</h3>
-
-                    {% if is_granted('ROLE_CLIENT') %}
-                        <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning shadow-sm">
-                            Écrire un avis
-                        </a>
+                                    <div class="mt-3 text-end">
+                                        <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-success rounded-pill px-3">
+                                            Ajouter <i class="bi bi-plus-lg"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-sm">
-                            Connectez-vous pour noter
-                        </a>
-                    {% endif %}
+                        <div class="col-12">
+                            <div class="alert alert-info">Ce restaurant n'a pas encore ajouté de plats.</div>
+                        </div>
+                    {% endfor %}
                 </div>
 
-                {% if restaurant.avis is empty %}
-                    <div class="alert alert-light text-center border">
-                        Soyez le premier à donner votre avis sur {{ restaurant.nom }} !
+                <hr class="my-5">
+
+
+                <div id="section-avis" class="bg-light p-4 rounded-3">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="mb-0">Avis des clients</h3>
+                        {% if is_granted('ROLE_CLIENT') %}
+                            <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold">
+                                Écrire un avis
+                            </a>
+                        {% endif %}
                     </div>
-                {% else %}
-                    <div class="list-group">
+
+                    {% if restaurant.avis is empty %}
+                        <p class="text-muted fst-italic">Aucun avis pour le moment.</p>
+                    {% else %}
                         {% for avis in restaurant.avis %}
-                            <div class="list-group-item border-0 border-bottom">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1 text-warning">
+                            <div class="card mb-3 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="fw-bold">{{ avis.client.prenom|default('Client') }}</h6>
+                                        <small class="text-muted">{{ avis.date|date("d/m/Y") }}</small>
+                                    </div>
+                                    <div class="text-warning mb-2">
                                         {% for i in 1..5 %}
                                             {{ i <= avis.note ? '★' : '☆' }}
                                         {% endfor %}
-                                    </h5>
-                                    <small class="text-muted">{{ avis.date|date("d/m/Y") }}</small>
+                                    </div>
+                                    <p class="mb-0">{{ avis.commentaire }}</p>
                                 </div>
-                                <p class="mb-1 mt-2">{{ avis.commentaire }}</p>
-                                <small class="text-secondary fw-bold">
-                                    Par {{ avis.client.prenom|default('Un client') }}
-                                </small>
                             </div>
                         {% endfor %}
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
+
             </div>
+
+            <div class="col-md-3">
+                <div class="sticky-top" style="top: 20px;">
+
+
+                    <div class="card shadow-sm mb-3 overflow-hidden">
+                        <div class="ratio ratio-1x1 bg-light">
+                            <iframe
+                                src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                                style="border:0;" loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body text-center">
+                            <h4 class="card-title">{{ restaurant.nom }}</h4>
+                            <p class="small text-muted">{{ restaurant.adresse }}</p>
+                            <div class="d-grid">
+                                <button class="btn btn-outline-dark">Réserver une table</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="mb-0"><i class="bi bi-clock"></i> Horaires</h6>
+                        </div>
+                        <ul class="list-group list-group-flush small">
+                            {% for horaire in horaires|default([]) %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>{{ horaire.jour }}</span>
+                                    <span>{{ horaire.ouverture }} - {{ horaire.fermeture }}</span>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item">Lundi : 12h-14h, 19h-22h</li>
+                                <li class="list-group-item">Mardi : 12h-14h, 19h-22h</li>
+                                <li class="list-group-item">...</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
-
-
     </div>
 {% endblock %}
