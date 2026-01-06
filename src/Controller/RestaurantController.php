@@ -17,15 +17,14 @@ class RestaurantController extends AbstractController
     {
         $searchTerm = $request->query->get('q');
 
-        if ($searchTerm) {
-            $restaurants = $restaurantRepository->findBySearch($searchTerm);
-        } else {
-            $restaurants = $restaurantRepository->findAll();
-        }
+        $sortType = $request->query->get('sort');
+
+        $restaurants = $restaurantRepository->findByComplexSearch($searchTerm, $sortType);
 
         return $this->render('restaurant/index.html.twig', [
             'restaurants' => $restaurants,
             'searchTerm' => $searchTerm,
+            'currentSort' => $sortType,
         ]);
     }
 
