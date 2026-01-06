@@ -22,7 +22,7 @@ final class PlatsFactory extends PersistentObjectFactory
     }
 
     #[\Override]
-    /** @var Restaurant $faker */
+    /** @var RestaurantProvider $faker */
     protected function defaults(): array|callable
     {
         $faker = self::faker();

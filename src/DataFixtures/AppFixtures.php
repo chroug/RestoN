@@ -85,6 +85,11 @@ class AppFixtures extends Fixture
                 'restaurant' => $restaurant,
                 'client' => ClientFactory::random(),
             ]);
+
+            PlatsFactory::createMany(10, [
+                'restaurant' => $restaurant,
+                'platsStocks' => StockFactory::new()->many(1),
+            ]);
         }
     }
 }
