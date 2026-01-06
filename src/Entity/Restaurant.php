@@ -32,6 +32,7 @@ class Restaurant
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $estOuvert = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $nombrePlaces = null;
 
@@ -54,7 +55,7 @@ class Restaurant
     {
         $this->plats = new ArrayCollection();
         $this->commandes = new ArrayCollection();
-        $this->horaires = new ArrayCollection(); // <--- Initialisation indispensable
+        $this->horaires = new ArrayCollection();
         $this->avis = new ArrayCollection();
     }
 
@@ -71,7 +72,6 @@ class Restaurant
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -80,10 +80,9 @@ class Restaurant
         return $this->adresse;
     }
 
-    public function setAdresse(string $adresse): static
+    public function setAdresse(?string $adresse): static
     {
         $this->adresse = $adresse;
-
         return $this;
     }
 
@@ -92,10 +91,9 @@ class Restaurant
         return $this->ville;
     }
 
-    public function setVille(string $ville): static
+    public function setVille(?string $ville): static
     {
         $this->ville = $ville;
-
         return $this;
     }
 
@@ -104,26 +102,44 @@ class Restaurant
         return $this->codePostal;
     }
 
-    public function getId(): ?int { return $this->id; }
+    public function setCodePostal(?string $codePostal): static
+    {
+        $this->codePostal = $codePostal;
+        return $this;
+    }
 
-    public function getNom(): ?string { return $this->nom; }
-    public function setNom(string $nom): static { $this->nom = $nom; return $this; }
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
 
-    public function getAdresse(): ?string { return $this->adresse; }
-    public function setAdresse(?string $adresse): static { $this->adresse = $adresse; return $this; }
+    public function setTelephone(?string $telephone): static
+    {
+        $this->telephone = $telephone;
+        return $this;
+    }
 
-    public function getVille(): ?string { return $this->ville; }
-    public function setVille(?string $ville): static { $this->ville = $ville; return $this; }
+    public function getEstOuvert(): ?string
+    {
+        return $this->estOuvert;
+    }
 
-    public function getCodePostal(): ?string { return $this->codePostal; }
-    public function setCodePostal(?string $codePostal): static { $this->codePostal = $codePostal; return $this; }
+    public function setEstOuvert(?string $estOuvert): static
+    {
+        $this->estOuvert = $estOuvert;
+        return $this;
+    }
 
-    public function getTelephone(): ?string { return $this->telephone; }
-    public function setTelephone(?string $telephone): static { $this->telephone = $telephone; return $this; }
-    public function getEstOuvert(): ?string { return $this->estOuvert; }
-    public function setEstOuvert(?string $estOuvert): static { $this->estOuvert = $estOuvert; return $this; }
-    public function getNombrePlaces(): ?int { return $this->nombrePlaces; }
-    public function setNombrePlaces(?int $nombrePlaces): static { $this->nombrePlaces = $nombrePlaces; return $this; }
+    public function getNombrePlaces(): ?int
+    {
+        return $this->nombrePlaces;
+    }
+
+    public function setNombrePlaces(?int $nombrePlaces): static
+    {
+        $this->nombrePlaces = $nombrePlaces;
+        return $this;
+    }
 
     /**
      * @return Collection<int, Horaire>
@@ -152,12 +168,50 @@ class Restaurant
         return $this;
     }
 
-    public function getPlats(): Collection { return $this->plats; }
-    public function addPlat(Plats $plat): static { if (!$this->plats->contains($plat)) { $this->plats->add($plat); $plat->setRestaurant($this); } return $this; }
-    public function removePlat(Plats $plat): static { if ($this->plats->removeElement($plat)) { if ($plat->getRestaurant() === $this) { $plat->setRestaurant(null); } } return $this; }
-    public function getCommandes(): Collection { return $this->commandes; }
-    public function addCommande(Commande $commande): static { if (!$this->commandes->contains($commande)) { $this->commandes->add($commande); $commande->setRestaurant($this); } return $this; }
-    public function removeCommande(Commande $commande): static { if ($this->commandes->removeElement($commande)) { if ($commande->getRestaurant() === $this) { $commande->setRestaurant(null); } } return $this; }
+    /**
+     * @return Collection<int, Plats>
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plats $plat): static
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+            $plat->setRestaurant($this);
+        }
+        return $this;
+    }
+
+    public function removePlat(Plats $plat): static
+    {
+        if ($this->plats->removeElement($plat)) {
+            if ($plat->getRestaurant() === $this) {
+                $plat->setRestaurant(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): static
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setRestaurant($this);
+        }
+        return $this;
+    }
+
     public function removeCommande(Commande $commande): static
     {
         if ($this->commandes->removeElement($commande)) {
@@ -166,7 +220,6 @@ class Restaurant
                 $commande->setRestaurant(null);
             }
         }
-
         return $this;
     }
 
@@ -184,7 +237,6 @@ class Restaurant
             $this->avis->add($avi);
             $avi->setRestaurant($this);
         }
-
         return $this;
     }
 
@@ -196,13 +248,12 @@ class Restaurant
                 $avi->setRestaurant(null);
             }
         }
-
         return $this;
     }
+
     public function getNoteMoyenne(): ?float
     {
         $avis = $this->getAvis();
-
 
         if ($avis->isEmpty()) {
             return null;
