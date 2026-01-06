@@ -59,10 +59,9 @@ class Restaurant
     /**
      * @var Collection<int, Serveur>
      */
-    #[ORM\OneToMany(targetEntity: Serveur::class, mappedBy: 'restaurant')]
-    private Collection $serveurs;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+
+    #[ORM\OneToOne(inversedBy: 'restaurant', cascade: ['persist', 'remove'])]
     private ?Patron $patron = null;
 
     public function __construct()
@@ -70,7 +69,7 @@ class Restaurant
         $this->plats = new ArrayCollection();
         $this->commandes = new ArrayCollection();
         $this->horaires = new ArrayCollection();
-        $this->avis = new ArrayCollection(); // Indispensable pour éviter l'erreur
+
         $this->avis = new ArrayCollection();
         $this->serveurs = new ArrayCollection();
     }
