@@ -95,7 +95,17 @@ class CommandeController extends AbstractController
     #[IsGranted('ROLE_SERVEUR', message: "Vous n'êtes pas serveur !")]
     public function espaceServeur(CommandeRepository $commandeRepository): Response
     {
-        $commandes = $commandeRepository->findBy([], ['date' => 'DESC']);
+        $user = $this->getUser();
+        $restaurant = $user->getRestaurant();
+
+        if (!$restaurant) {
+            throw $this->createAccessDeniedException("Erreur : Votre compte serveur n'est lié à aucun restaurant !");
+        }
+
+        $commandes = $commandeRepository->findBy(
+            ['restaurant' => $restaurant],
+            ['date' => 'DESC']
+        );
 
         return $this->render('commande/serveur.html.twig', [
             'commandes' => $commandes,
