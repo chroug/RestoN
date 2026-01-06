@@ -97,7 +97,7 @@ class CommandeController extends AbstractController
     {
         $commandes = $commandeRepository->findBy([], ['date' => 'DESC']);
 
-        return $this->render('commande/admin.html.twig', [
+        return $this->render('commande/serveur.html.twig', [
             'commandes' => $commandes,
         ]);
     }
