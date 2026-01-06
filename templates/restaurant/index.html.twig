@@ -5,7 +5,6 @@
 {% block body %}
     <div class="container" style="margin-top: 30px;">
 
-
         {% if is_granted('ROLE_CLIENT') %}
             <div class="p-4 mb-4 bg-light rounded-3 shadow-sm border">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
@@ -36,7 +35,6 @@
             <div class="col-md-8 mt-3 mt-md-0">
                 <form action="{{ path('app_restaurants') }}" method="GET" class="d-flex gap-2 flex-wrap flex-md-nowrap" role="search">
 
-                    {# INPUT RECHERCHE #}
                     <div class="input-group">
                         <span class="input-group-text bg-white text-muted border-end-0">
                             <i class="bi bi-search"></i>
@@ -49,16 +47,16 @@
                     </div>
 
                     <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
-                        <option value="" {{ currentSort is empty ? 'selected' : '' }}>Trier par...</option>
-                        <option value="note_desc" {{ currentSort == 'note_desc' ? 'selected' : '' }}>⭐ Mieux notés</option>
-                        <option value="note_asc" {{ currentSort == 'note_asc' ? 'selected' : '' }}>⭐ Moins bien notés</option>
-                        <option value="avis_desc" {{ currentSort == 'avis_desc' ? 'selected' : '' }}>💬 Plus d'avis</option>
-                        <option value="avis_asc" {{ currentSort == 'avis_asc' ? 'selected' : '' }}>💬 Moins d'avis</option>
+                        <option value="" {{ currentSort is not defined or currentSort is empty ? 'selected' : '' }}>Trier par...</option>
+                        <option value="note_desc" {{ currentSort|default('') == 'note_desc' ? 'selected' : '' }}>⭐ Mieux notés</option>
+                        <option value="note_asc" {{ currentSort|default('') == 'note_asc' ? 'selected' : '' }}>⭐ Moins bien notés</option>
+                        <option value="avis_desc" {{ currentSort|default('') == 'avis_desc' ? 'selected' : '' }}>💬 Plus d'avis</option>
+                        <option value="avis_asc" {{ currentSort|default('') == 'avis_asc' ? 'selected' : '' }}>💬 Moins d'avis</option>
                     </select>
 
                     <button class="btn btn-primary" type="submit">Filtrer</button>
 
-                    {% if searchTerm or currentSort %}
+                    {% if searchTerm or (currentSort is defined and currentSort) %}
                         <a href="{{ path('app_restaurants') }}" class="btn btn-outline-danger" title="Tout effacer">
                             <i class="bi bi-x-lg"></i>
                         </a>
@@ -67,25 +65,28 @@
             </div>
         </div>
 
-        {% if restaurants is empty and searchTerm is defined and searchTerm %}
+        {% if restaurants is empty %}
             <div class="alert alert-warning text-center mb-5">
                 <i class="bi bi-exclamation-circle me-2"></i>
-                Aucun restaurant ne correspond à votre recherche "<strong>{{ searchTerm }}</strong>".
+                {% if searchTerm %}
+                    Aucun restaurant ne correspond à votre recherche "<strong>{{ searchTerm }}</strong>".
+                {% else %}
+                    Aucun restaurant disponible pour le moment.
+                {% endif %}
                 <br>
                 <a href="{{ path('app_restaurants') }}" class="alert-link mt-2 d-inline-block">Voir tous les restaurants</a>
             </div>
         {% endif %}
-        <h1 class="text-center mb-5 fw-bold">Nos Restaurants Partenaires</h1>
+
 
         <div class="row">
             {% for restaurant in restaurants %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm border-0 overflow-hidden">
 
-
                         <div class="ratio ratio-21x9 bg-light">
                             <iframe
-                                src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                                src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
                                 style="border:0;"
                                 loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade">
@@ -94,7 +95,9 @@
 
                         <div class="card-body text-center d-flex flex-column">
 
+
                             <h3 class="card-title fw-bold mt-2">{{ restaurant.nom }}</h3>
+
 
                             <p class="text-muted small mb-3 flex-grow-1">
                                 <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
@@ -105,47 +108,39 @@
                                     </span>
                                 {% endif %}
                             </p>
-                            <h3 class="card-title">{{ restaurant.nom }}</h3>
+
 
                             <div class="mb-3">
                                 {% if restaurant.avis|length > 0 %}
-
                                     <span class="text-warning fw-bold fs-5">
-            {{ restaurant.noteMoyenne }}/5 ★
-        </span>
+                                        {{ restaurant.noteMoyenne }}/5 ★
+                                    </span>
                                     <span class="text-muted small">({{ restaurant.avis|length }} avis)</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark border">Nouveau</span>
                                 {% endif %}
                             </div>
 
-                            {# 👇 BOUTON ADMIN : Visible uniquement pour le Gérant 👇 #}
-                            {% if is_granted('ROLE_GERANT') %}
-                                <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
-                                   class="btn btn-warning w-100 fw-bold mb-2 shadow-sm">
-                                    <i class="bi bi-pencil-square"></i> Modifier le Restaurant
+                            <div class="d-grid gap-2">
+                                {% if is_granted('ROLE_GERANT') %}
+                                    <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
+                                       class="btn btn-warning fw-bold shadow-sm">
+                                        <i class="bi bi-pencil-square"></i> Modifier
+                                    </a>
+                                {% endif %}
+
+                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary fw-bold">
+                                    Voir la carte <i class="bi bi-arrow-right"></i>
                                 </a>
-                            {% endif %}
-                            {# 👆 FIN ZONE ADMIN 👆 #}
 
-                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 fw-bold">
-                                Voir la carte <i class="bi bi-arrow-right"></i>
-                            </a>
+                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary">
+                                    Voir les avis
+                                </a>
+                            </div>
 
-                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary w-100">
-                                Voir les avis <i class="bi bi-arrow-right"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
-            {% else %}
-                {% if searchTerm is not defined or not searchTerm %}
-                    <div class="col-12">
-                        <div class="alert alert-info text-center">
-                            Aucun restaurant n'est disponible pour le moment.
-                        </div>
-                    </div>
-                {% endif %}
             {% endfor %}
         </div>
     </div>
