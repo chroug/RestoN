@@ -13,18 +13,30 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/restaurant')]
-#[IsGranted('ROLE_GERANT')]
 class AdminRestaurantController extends AbstractController
 {
     #[Route('/{id}/edit', name: 'app_admin_restaurant_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Restaurant $restaurant, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if (!$this->isGranted('ROLE_GERANT')) {
+            if ($restaurant->getPatron() !== $user) {
+                return $this->redirectToRoute('app_admin_restaurant_edit', [
+                    'id' => $user->getRestaurant()->getId()
+                ]);
+            }
+        }
+
         if ($restaurant->getHoraires()->isEmpty()) {
             $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
             foreach ($jours as $jour) {
                 $horaire = new Horaire();
                 $horaire->setJour($jour);
-                // On met des heures par défaut pour aider le gérant
                 $horaire->setOuvertureMidi(new \DateTime('12:00'));
                 $horaire->setFermetureMidi(new \DateTime('14:30'));
                 $horaire->setOuvertureSoir(new \DateTime('19:00'));
