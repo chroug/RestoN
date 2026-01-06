@@ -15,8 +15,7 @@
                             <h5 class="mb-0"><i class="bi bi-basket"></i> Mon Panier</h5>
                         </div>
                         <div class="card-body">
-                            {# ICI : Idéalement, il faut faire un {{ render(controller('App\\Controller\\CartController::summary')) }} #}
-                            {# Pour l'instant, je mets du faux texte pour respecter ton dessin #}
+                            {# ICI : idealement, plus tard un {{ render(...) }} #}
                             <p class="small text-muted">Votre panier est vide pour le moment.</p>
 
                             <hr>
@@ -34,17 +33,13 @@
                 </div>
             </div>
 
-
             <div class="col-md-7">
-
-
                 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
                     <h1 class="h2 m-0">Carte : {{ restaurant.nom }}</h1>
-                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ path('app_restaurants') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-arrow-left"></i> Changer
                     </a>
                 </div>
-
 
                 <div class="row">
                     {% for plat in plats %}
@@ -74,15 +69,16 @@
 
                 <hr class="my-5">
 
-
                 <div id="section-avis" class="bg-light p-4 rounded-3">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">Avis des clients</h3>
                         {% if is_granted('ROLE_CLIENT') %}
                             <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold">
+                            <button class="btn btn-warning text-dark fw-bold">
                                 Écrire un avis
-                            </a>
+                            </button>
                         {% endif %}
+                            </a>
                     </div>
 
                     {% if restaurant.avis is empty %}
@@ -108,11 +104,8 @@
                 </div>
 
             </div>
-
             <div class="col-md-3">
                 <div class="sticky-top" style="top: 20px;">
-
-
                     <div class="card shadow-sm mb-3 overflow-hidden">
                         <div class="ratio ratio-1x1 bg-light">
                             <iframe
@@ -138,14 +131,29 @@
                         </div>
                         <ul class="list-group list-group-flush small">
                             {% for horaire in horaires|default([]) %}
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>{{ horaire.jour }}</span>
-                                    <span>{{ horaire.ouverture }} - {{ horaire.fermeture }}</span>
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                    <strong>{{ horaire.jour }}</strong>
+
+                                    <div class="text-end ms-auto">
+                                        {% if horaire.ferme %}
+                                            <span class="badge bg-danger">Fermé</span>
+                                        {% else %}
+                                            {% if horaire.ouvertureMidi %}
+                                                <div style="font-size: 0.9em;">
+                                                    Midi: {{ horaire.ouvertureMidi|date('H:i') }}-{{ horaire.fermetureMidi|date('H:i') }}
+                                                </div>
+                                            {% endif %}
+
+                                            {% if horaire.ouvertureSoir %}
+                                                <div style="font-size: 0.9em;">
+                                                    Soir: {{ horaire.ouvertureSoir|date('H:i') }}-{{ horaire.fermetureSoir|date('H:i') }}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
                                 </li>
                             {% else %}
-                                <li class="list-group-item">Lundi : 12h-14h, 19h-22h</li>
-                                <li class="list-group-item">Mardi : 12h-14h, 19h-22h</li>
-                                <li class="list-group-item">...</li>
+                                <li class="list-group-item text-muted">Horaires non renseignés</li>
                             {% endfor %}
                         </ul>
                     </div>
