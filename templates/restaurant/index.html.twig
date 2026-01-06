@@ -5,9 +5,9 @@
 {% block body %}
     <div class="container" style="margin-top: 30px;">
 
-
+        {# --- BLOC BIENVENUE CLIENT --- #}
         {% if is_granted('ROLE_CLIENT') %}
-            <div class="p-4 mb-4 bg-light rounded-3 shadow-sm border">
+            <div class="p-4 mb-5 bg-light rounded-3 shadow-sm border">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
                         <h2 class="text-primary fw-bold">Bonjour, {{ app.user.prenom }} ! 👋</h2>
@@ -30,12 +30,13 @@
 
         <h1 class="text-center mb-5 fw-bold">Nos Restaurants Partenaires</h1>
 
+        {# --- LISTE DES RESTAURANTS --- #}
         <div class="row">
             {% for restaurant in restaurants %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm border-0 overflow-hidden">
 
-
+                        {# --- CARTE GOOGLE MAPS --- #}
                         <div class="ratio ratio-21x9 bg-light">
                             <iframe
                                 src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
@@ -45,60 +46,64 @@
                             </iframe>
                         </div>
 
+                        {# --- CORPS DE LA CARTE --- #}
                         <div class="card-body text-center d-flex flex-column">
 
                             <h3 class="card-title fw-bold mt-2">{{ restaurant.nom }}</h3>
 
-                            <p class="text-muted small mb-3 flex-grow-1">
-                                <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
+                            {# ADRESSE & PLACES #}
+                            <div class="text-muted small mb-3 flex-grow-1">
+                                <p class="mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}</p>
                                 {% if restaurant.nombrePlaces %}
-                                    <br>
                                     <span class="badge bg-secondary mt-1">
                                         <i class="bi bi-people-fill"></i> {{ restaurant.nombrePlaces }} places
                                     </span>
                                 {% endif %}
-                            </p>
-                            <h3 class="card-title">{{ restaurant.nom }}</h3>
+                            </div>
 
-                            <div class="mb-3">
+                            {# AVIS / NOTES #}
+                            <div class="mb-4">
                                 {% if restaurant.avis|length > 0 %}
-
                                     <span class="text-warning fw-bold fs-5">
-            {{ restaurant.noteMoyenne }}/5 ★
-        </span>
-                                    <span class="text-muted small">({{ restaurant.avis|length }} avis)</span>
+                                        {{ restaurant.noteMoyenne }}/5 <i class="bi bi-star-fill"></i>
+                                    </span>
+                                    <span class="text-muted small ms-1">({{ restaurant.avis|length }} avis)</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark border">Nouveau</span>
                                 {% endif %}
                             </div>
 
-                            {# 👇 BOUTON ADMIN : Visible uniquement pour le Gérant 👇 #}
-                            {% if is_granted('ROLE_GERANT') %}
-                                <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
-                                   class="btn btn-warning w-100 fw-bold mb-2 shadow-sm">
-                                    <i class="bi bi-pencil-square"></i> Modifier le Restaurant
+                            {# --- BOUTONS D'ACTION --- #}
+                            <div class="d-grid gap-2">
+
+                                {# Bouton ADMIN #}
+                                {% if is_granted('ROLE_GERANT') %}
+                                    <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
+                                       class="btn btn-warning fw-bold shadow-sm">
+                                        <i class="bi bi-pencil-square"></i> Modifier le Restaurant
+                                    </a>
+                                {% endif %}
+
+                                {# Boutons UTILISATEUR #}
+                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary fw-bold">
+                                    Voir la carte <i class="bi bi-arrow-right"></i>
                                 </a>
-                            {% endif %}
-                            {# 👆 FIN ZONE ADMIN 👆 #}
 
-                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 fw-bold">
-                                Voir la carte <i class="bi bi-arrow-right"></i>
-                            </a>
+                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary">
+                                    Voir les avis
+                                </a>
+                            </div>
 
-                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary w-100">
-                                Voir les avis <i class="bi bi-arrow-right"></i>
-                            </a>
                         </div>
                     </div>
                 </div>
             {% else %}
-                {% if searchTerm is not defined or not searchTerm %}
-                    <div class="col-12">
-                        <div class="alert alert-info text-center">
-                            Aucun restaurant n'est disponible pour le moment.
-                        </div>
+                {# CAS OÙ AUCUN RESTAURANT N'EST TROUVÉ #}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i> Aucun restaurant n'est disponible pour le moment.
                     </div>
-                {% endif %}
+                </div>
             {% endfor %}
         </div>
     </div>
