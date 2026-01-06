@@ -57,8 +57,8 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_admin_plats_index'));
 
         } elseif (in_array('ROLE_SERVEUR', $user->getRoles())) {
-            // redirection pour le sereur vers les commandes
-            return new RedirectResponse($this->urlGenerator->generate('app_mes_commandes'));
+            // redirection pour le sereur vers les commandes de son resto
+            return new RedirectResponse($this->urlGenerator->generate('app_serveur_commandes'));
 
         } else {
             // du coup redirection pour le client vers le splats
