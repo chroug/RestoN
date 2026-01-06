@@ -90,4 +90,15 @@ class CommandeController extends AbstractController
 
         return $this->redirectToRoute('app_mes_commandes');
     }
+
+    #[Route('/espace-serveur', name: 'app_serveur_commandes')]
+    #[IsGranted('ROLE_SERVEUR', message: "Vous n'êtes pas serveur !")]
+    public function espaceServeur(CommandeRepository $commandeRepository): Response
+    {
+        $commandes = $commandeRepository->findBy([], ['date' => 'DESC']);
+
+        return $this->render('commande/admin.html.twig', [
+            'commandes' => $commandes,
+        ]);
+    }
 }
