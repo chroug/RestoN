@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Menu du Restaurant{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>🍝 Menu : {{ restaurant.nom }}</h1>
+            <a href="{{ path('app_serveur_dashboard') }}" class="btn btn-secondary">Retour Dashboard</a>
+        </div>
+
+        <table class="table table-striped table-hover shadow-sm">
+            <thead class="table-dark">
+            <tr>
+                <th>Image</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for plat in plats %}
+                <tr>
+                    <td>
+                        {% if plat.image %}
+                            <img src="{{ plat.image }}" alt="{{ plat.nom }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                        {% else %}
+                            <span style="font-size: 1.5rem;">🍽️</span>
+                        {% endif %}
+                    </td>
+                    <td class="fw-bold">{{ plat.nom }}</td>
+                    <td>{{ plat.description|slice(0, 50) }}...</td>
+                    <td class="fw-bold text-success">{{ plat.prix }} €</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucun plat dans ce restaurant pour le moment.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
