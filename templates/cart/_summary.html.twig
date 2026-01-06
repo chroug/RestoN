@@ -1,0 +1,30 @@
+
+{% if items is empty %}
+    <p class="small text-muted text-center my-3">
+        Votre panier est vide.
+    </p>
+{% else %}
+    <ul class="list-group list-group-flush mb-3">
+        {% for item in items %}
+            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-start bg-transparent">
+                <div class="me-auto">
+                    <div class="fw-bold small">{{ item.plat.nom }}</div>
+                    <div class="text-muted" style="font-size: 0.8em;">
+                        {{ item.plat.prix }} € x {{ item.quantity }}
+                    </div>
+                </div>
+
+                <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" class="text-danger ms-2 text-decoration-none">
+                    <i class="bi bi-x-circle-fill"></i>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="border-top pt-2">
+        <div class="d-flex justify-content-between fw-bold">
+            <span>Total</span>
+            <span class="text-primary">{{ total }} €</span>
+        </div>
+    </div>
+{% endif %}
