@@ -85,4 +85,12 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('app_home');
     }
+#[Route('/cart/summary', name: 'cart_summary')]
+    public function summary(CartService $cartService): Response
+{
+    return $this->render('cart/_summary.html.twig', [
+        'items' => $cartService->getFullCart(),
+        'total' => $cartService->getTotal()
+    ]);
+}
 }
