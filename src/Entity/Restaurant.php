@@ -44,14 +44,26 @@ class Restaurant
     #[ORM\OneToMany(targetEntity: Plats::class, mappedBy: 'restaurant')]
     private Collection $plats;
 
+    /**
+     * @var Collection<int, Commande>
+     */
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'restaurant')]
     private Collection $commandes;
 
-    // C'est ici que ça manquait : Relation avec Avis
+    /**
+     * @var Collection<int, Avis>
+     */
     #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'restaurant')]
     private Collection $avis;
 
-    // --- CONSTRUCTEUR ---
+    /**
+     * @var Collection<int, Serveur>
+     */
+    #[ORM\OneToMany(targetEntity: Serveur::class, mappedBy: 'restaurant')]
+    private Collection $serveurs;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Patron $patron = null;
 
     public function __construct()
     {
@@ -59,6 +71,8 @@ class Restaurant
         $this->commandes = new ArrayCollection();
         $this->horaires = new ArrayCollection();
         $this->avis = new ArrayCollection(); // Indispensable pour éviter l'erreur
+        $this->avis = new ArrayCollection();
+        $this->serveurs = new ArrayCollection();
     }
 
     // --- GETTERS & SETTERS ---
@@ -129,6 +143,7 @@ class Restaurant
 
     public function removePlat(Plats $plat): static {
         if ($this->plats->removeElement($plat)) {
+            // set the owning side to null (unless already changed)
             if ($plat->getRestaurant() === $this) {
                 $plat->setRestaurant(null);
             }
@@ -156,8 +171,6 @@ class Restaurant
         }
         return $this;
     }
-
-    // --- LOGIQUE AVIS (Celle qui avait disparu) ---
 
     /**
      * @return Collection<int, Avis>
@@ -203,4 +216,47 @@ class Restaurant
         }
         return round($total / count($avis), 1);
     }
+
+    /**
+     * @return Collection<int, Serveur>
+     */
+    public function getServeurs(): Collection
+    {
+        return $this->serveurs;
+    }
+
+    public function addServeur(Serveur $serveur): static
+    {
+        if (!$this->serveurs->contains($serveur)) {
+            $this->serveurs->add($serveur);
+            $serveur->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServeur(Serveur $serveur): static
+    {
+        if ($this->serveurs->removeElement($serveur)) {
+            // set the owning side to null (unless already changed)
+            if ($serveur->getRestaurant() === $this) {
+                $serveur->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPatron(): ?Patron
+    {
+        return $this->patron;
+    }
+
+    public function setPatron(?Patron $patron): static
+    {
+        $this->patron = $patron;
+
+        return $this;
+    }
+
 }
