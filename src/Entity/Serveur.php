@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,9 +13,6 @@ class Serveur extends User
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $matricule = null;
 
-    /**
-     * @var Collection<int, Commande>
-     */
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'serveur')]
     private Collection $commandes;
 
@@ -56,7 +54,6 @@ class Serveur extends User
     public function removeCommande(Commande $commande): static
     {
         if ($this->commandes->removeElement($commande)) {
-            // set the owning side to null (unless already changed)
             if ($commande->getServeur() === $this) {
                 $commande->setServeur(null);
             }
