@@ -32,8 +32,11 @@ class Restaurant
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $estOuvert = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $nombrePlaces = null;
+
+    // --- RELATIONS ---
 
     #[ORM\OneToMany(targetEntity: Horaire::class, mappedBy: 'restaurant', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $horaires;
@@ -44,12 +47,21 @@ class Restaurant
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'restaurant')]
     private Collection $commandes;
 
+    // C'est ici que ça manquait : Relation avec Avis
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'restaurant')]
+    private Collection $avis;
+
+    // --- CONSTRUCTEUR ---
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();
         $this->commandes = new ArrayCollection();
-        $this->horaires = new ArrayCollection(); // <--- Initialisation indispensable
+        $this->horaires = new ArrayCollection();
+        $this->avis = new ArrayCollection(); // Indispensable pour éviter l'erreur
     }
+
+    // --- GETTERS & SETTERS ---
 
     public function getId(): ?int { return $this->id; }
 
@@ -67,10 +79,14 @@ class Restaurant
 
     public function getTelephone(): ?string { return $this->telephone; }
     public function setTelephone(?string $telephone): static { $this->telephone = $telephone; return $this; }
+
     public function getEstOuvert(): ?string { return $this->estOuvert; }
     public function setEstOuvert(?string $estOuvert): static { $this->estOuvert = $estOuvert; return $this; }
+
     public function getNombrePlaces(): ?int { return $this->nombrePlaces; }
     public function setNombrePlaces(?int $nombrePlaces): static { $this->nombrePlaces = $nombrePlaces; return $this; }
+
+    // --- LOGIQUE HORAIRES ---
 
     /**
      * @return Collection<int, Horaire>
@@ -99,10 +115,92 @@ class Restaurant
         return $this;
     }
 
+    // --- LOGIQUE PLATS ---
+
     public function getPlats(): Collection { return $this->plats; }
-    public function addPlat(Plats $plat): static { if (!$this->plats->contains($plat)) { $this->plats->add($plat); $plat->setRestaurant($this); } return $this; }
-    public function removePlat(Plats $plat): static { if ($this->plats->removeElement($plat)) { if ($plat->getRestaurant() === $this) { $plat->setRestaurant(null); } } return $this; }
+
+    public function addPlat(Plats $plat): static {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+            $plat->setRestaurant($this);
+        }
+        return $this;
+    }
+
+    public function removePlat(Plats $plat): static {
+        if ($this->plats->removeElement($plat)) {
+            if ($plat->getRestaurant() === $this) {
+                $plat->setRestaurant(null);
+            }
+        }
+        return $this;
+    }
+
+    // --- LOGIQUE COMMANDES ---
+
     public function getCommandes(): Collection { return $this->commandes; }
-    public function addCommande(Commande $commande): static { if (!$this->commandes->contains($commande)) { $this->commandes->add($commande); $commande->setRestaurant($this); } return $this; }
-    public function removeCommande(Commande $commande): static { if ($this->commandes->removeElement($commande)) { if ($commande->getRestaurant() === $this) { $commande->setRestaurant(null); } } return $this; }
+
+    public function addCommande(Commande $commande): static {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setRestaurant($this);
+        }
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): static {
+        if ($this->commandes->removeElement($commande)) {
+            if ($commande->getRestaurant() === $this) {
+                $commande->setRestaurant(null);
+            }
+        }
+        return $this;
+    }
+
+    // --- LOGIQUE AVIS (Celle qui avait disparu) ---
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setRestaurant($this);
+        }
+        return $this;
+    }
+
+    public function removeAvi(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            if ($avi->getRestaurant() === $this) {
+                $avi->setRestaurant(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Calcule la note moyenne du restaurant
+     */
+    public function getNoteMoyenne(): ?float
+    {
+        $avis = $this->getAvis();
+
+        if ($avis->isEmpty()) {
+            return null;
+        }
+
+        $total = 0;
+        foreach ($avis as $unAvis) {
+            $total += $unAvis->getNote();
+        }
+        return round($total / count($avis), 1);
+    }
 }
