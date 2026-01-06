@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil - Restaurants{% endblock %}
+{% block title %}Restaurants{% endblock %}
 
 {% block body %}
     <div class="container" style="margin-top: 30px;">
 
-        {# --- BLOC BIENVENUE CLIENT --- #}
         {% if is_granted('ROLE_CLIENT') %}
-            <div class="p-4 mb-5 bg-light rounded-3 shadow-sm border">
+            <div class="p-4 mb-4 bg-light rounded-3 shadow-sm border">
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <div>
                         <h2 class="text-primary fw-bold">Bonjour, {{ app.user.prenom }} ! 👋</h2>
@@ -28,15 +27,59 @@
             </div>
         {% endif %}
 
-        <h1 class="text-center mb-5 fw-bold">Nos Restaurants Partenaires</h1>
+        <div class="row align-items-center mb-5">
+            <div class="col-md-4">
+                <h1 class="fw-bold mb-0">Nos Restaurants</h1>
+            </div>
 
-        {# --- LISTE DES RESTAURANTS --- #}
+            <div class="col-md-8 mt-3 mt-md-0">
+                <form action="{{ path('app_restaurants') }}" method="GET" class="d-flex gap-2 flex-wrap flex-md-nowrap" role="search">
+
+                    {# INPUT RECHERCHE #}
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input class="form-control border-start-0 ps-0"
+                               type="search"
+                               name="q"
+                               value="{{ searchTerm|default('') }}"
+                               placeholder="Nom, Ville, Rue...">
+                    </div>
+
+                    <select name="sort" class="form-select w-auto" onchange="this.form.submit()">
+                        <option value="" {{ currentSort is empty ? 'selected' : '' }}>Trier par...</option>
+                        <option value="note_desc" {{ currentSort == 'note_desc' ? 'selected' : '' }}>⭐ Mieux notés</option>
+                        <option value="note_asc" {{ currentSort == 'note_asc' ? 'selected' : '' }}>⭐ Moins bien notés</option>
+                        <option value="avis_desc" {{ currentSort == 'avis_desc' ? 'selected' : '' }}>💬 Plus d'avis</option>
+                        <option value="avis_asc" {{ currentSort == 'avis_asc' ? 'selected' : '' }}>💬 Moins d'avis</option>
+                    </select>
+
+                    <button class="btn btn-primary" type="submit">Filtrer</button>
+
+                    {% if searchTerm or currentSort %}
+                        <a href="{{ path('app_restaurants') }}" class="btn btn-outline-danger" title="Tout effacer">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if restaurants is empty and searchTerm is defined and searchTerm %}
+            <div class="alert alert-warning text-center mb-5">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                Aucun restaurant ne correspond à votre recherche "<strong>{{ searchTerm }}</strong>".
+                <br>
+                <a href="{{ path('app_restaurants') }}" class="alert-link mt-2 d-inline-block">Voir tous les restaurants</a>
+            </div>
+        {% endif %}
+
         <div class="row">
             {% for restaurant in restaurants %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm border-0 overflow-hidden">
 
-                        {# --- CARTE GOOGLE MAPS --- #}
                         <div class="ratio ratio-21x9 bg-light">
                             <iframe
                                 src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
@@ -46,64 +89,44 @@
                             </iframe>
                         </div>
 
-                        {# --- CORPS DE LA CARTE --- #}
                         <div class="card-body text-center d-flex flex-column">
-
                             <h3 class="card-title fw-bold mt-2">{{ restaurant.nom }}</h3>
 
-                            {# ADRESSE & PLACES #}
-                            <div class="text-muted small mb-3 flex-grow-1">
-                                <p class="mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}</p>
-                                {% if restaurant.nombrePlaces %}
-                                    <span class="badge bg-secondary mt-1">
-                                        <i class="bi bi-people-fill"></i> {{ restaurant.nombrePlaces }} places
-                                    </span>
-                                {% endif %}
-                            </div>
+                            <p class="text-muted small mb-3 flex-grow-1">
+                                <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
+                            </p>
+                            <h3 class="card-title">{{ restaurant.nom }}</h3>
 
-                            {# AVIS / NOTES #}
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 {% if restaurant.avis|length > 0 %}
+
                                     <span class="text-warning fw-bold fs-5">
-                                        {{ restaurant.noteMoyenne }}/5 <i class="bi bi-star-fill"></i>
-                                    </span>
-                                    <span class="text-muted small ms-1">({{ restaurant.avis|length }} avis)</span>
+            {{ restaurant.noteMoyenne }}/5 ★
+        </span>
+                                    <span class="text-muted small">({{ restaurant.avis|length }} avis)</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark border">Nouveau</span>
                                 {% endif %}
                             </div>
 
-                            {# --- BOUTONS D'ACTION --- #}
-                            <div class="d-grid gap-2">
+                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary w-100 fw-bold">
+                                Voir la carte <i class="bi bi-arrow-right"></i>
+                            </a>
 
-                                {# Bouton ADMIN #}
-                                {% if is_granted('ROLE_GERANT') %}
-                                    <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
-                                       class="btn btn-warning fw-bold shadow-sm">
-                                        <i class="bi bi-pencil-square"></i> Modifier le Restaurant
-                                    </a>
-                                {% endif %}
-
-                                {# Boutons UTILISATEUR #}
-                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}" class="btn btn-primary fw-bold">
-                                    Voir la carte <i class="bi bi-arrow-right"></i>
-                                </a>
-
-                                <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary">
-                                    Voir les avis
-                                </a>
-                            </div>
-
+                            <a href="{{ path('app_restaurant_show', {'id': restaurant.id}) }}#section-avis" class="btn btn-outline-secondary w-100">
+                                Voir les avis <i class="bi bi-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             {% else %}
-                {# CAS OÙ AUCUN RESTAURANT N'EST TROUVÉ #}
-                <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <i class="bi bi-info-circle"></i> Aucun restaurant n'est disponible pour le moment.
+                {% if searchTerm is not defined or not searchTerm %}
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            Aucun restaurant n'est disponible pour le moment.
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
