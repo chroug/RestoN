@@ -10,14 +10,15 @@
             <a href="{{ path('app_restaurants') }}" class="btn btn-outline-secondary"> Changer de restaurant</a>
         </div>
 
+        {# 1. La rangée pour les PLATS #}
         <div class="row">
             {% for plat in plats %}
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
-                        {# GESTION IMAGE (pour plus tard si pas la flemme) #}
+                        {# GESTION IMAGE #}
                         {# {% if plat.image %}
-                        <img src="{{ asset('uploads/images/' ~ plat.image) }}" class="card-img-top" alt="{{ plat.nom }}" style="height: 200px; object-fit: cover;">
-                    {% endif %} #}
+                            <img src="{{ asset('uploads/images/' ~ plat.image) }}" class="card-img-top" alt="{{ plat.nom }}" style="height: 200px; object-fit: cover;">
+                        {% endif %} #}
 
                         <div class="card-body d-flex flex-column">
                             {% if plat.category %}
@@ -41,11 +42,63 @@
                         </div>
                     </div>
                 </div>
+                {# J'AI SUPPRIMÉ LE <hr class="my-5"> ICI #}
+
             {% else %}
                 <div class="col-12">
                     <div class="alert alert-info">Ce restaurant n'a pas encore ajouté de plats.</div>
                 </div>
             {% endfor %}
         </div>
+        {# Fin de la row des plats #}
+
+        {# 2. La section AVIS (en dehors de la boucle des plats pour être propre) #}
+        <hr class="my-5"> {# Celui-ci est utile pour séparer les plats des avis #}
+
+        <div id="section-avis" class="row">
+            <div class="col-md-10 mx-auto">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Avis des clients</h3>
+
+                    {% if is_granted('ROLE_CLIENT') %}
+                        <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning shadow-sm">
+                            Écrire un avis
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-outline-secondary btn-sm">
+                            Connectez-vous pour noter
+                        </a>
+                    {% endif %}
+                </div>
+
+                {% if restaurant.avis is empty %}
+                    <div class="alert alert-light text-center border">
+                        Soyez le premier à donner votre avis sur {{ restaurant.nom }} !
+                    </div>
+                {% else %}
+                    <div class="list-group">
+                        {% for avis in restaurant.avis %}
+                            <div class="list-group-item border-0 border-bottom">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text-warning">
+                                        {% for i in 1..5 %}
+                                            {{ i <= avis.note ? '★' : '☆' }}
+                                        {% endfor %}
+                                    </h5>
+                                    <small class="text-muted">{{ avis.date|date("d/m/Y") }}</small>
+                                </div>
+                                <p class="mb-1 mt-2">{{ avis.commentaire }}</p>
+                                <small class="text-secondary fw-bold">
+                                    Par {{ avis.client.prenom|default('Un client') }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
     </div>
 {% endblock %}
