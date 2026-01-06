@@ -38,8 +38,6 @@ final class PatronFactory extends PersistentObjectFactory
 
     protected function initialize(): static
     {
-        return $this->afterInstantiate(function(Patron $patron): void {
-            $patron->setPassword($this->hasher->hashPassword($patron, $patron->getPassword()));
-        });
+        return $this;
     }
 }
