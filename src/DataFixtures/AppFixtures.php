@@ -50,38 +50,32 @@ class AppFixtures extends Fixture
             'isVerified' => true
         ]);
 
-        $patronPrincipal = PatronFactory::createOne([
-            'email' => 'patron@gourmet.com',
-            'password' => $passwordPatron,
-            'roles' => ['ROLE_PATRON'],
-            'isVerified' => true
-        ]);
-
         $mainResto = RestaurantFactory::createOne([
             'nom' => 'Le Gourmet Symfony',
             'estOuvert' => 'Ouvert',
-            'patron' => $patronPrincipal,
+            'patron' => PatronFactory::new([
+                'email' => 'patron@gourmet.com',
+                'password' => $passwordPatron,
+                'nom' => 'Boss',
+                'roles' => ['ROLE_PATRON'],
+                'isVerified' => true
+            ]),
         ]);
 
-        $autresRestos = [];
-        $autresPatrons = PatronFactory::createMany(5, [
-            'password' => $passwordPatron,
-            'roles' => ['ROLE_PATRON'],
-            'isVerified' => true
+        $autresRestos = RestaurantFactory::createMany(5, [
+            'patron' => PatronFactory::new([
+                'password' => $passwordPatron,
+                'roles' => ['ROLE_PATRON'],
+                'isVerified' => true
+            ])
         ]);
-
-        foreach ($autresPatrons as $patron) {
-            $autresRestos[] = RestaurantFactory::createOne([
-                'patron' => $patron
-            ]);
-        }
 
         $tousLesRestos = array_merge([$mainResto], $autresRestos);
 
         foreach ($tousLesRestos as $restaurant) {
-            $platsDuResto = PlatsFactory::createMany(15, [
+            $platsDuResto = PlatsFactory::createMany(10, [
                 'restaurant' => $restaurant,
-                'platsStocks' => StockFactory::new()->many(1),
+
             ]);
 
             $serveursDuResto = ServeurFactory::createMany(2, [
