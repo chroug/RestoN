@@ -18,6 +18,10 @@ class Serveur extends User
     #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'serveur')]
     private Collection $commandes;
 
+    #[ORM\ManyToOne(inversedBy: 'serveurs')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Restaurant $restaurant = null;
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -61,6 +65,18 @@ class Serveur extends User
                 $commande->setServeur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): static
+    {
+        $this->restaurant = $restaurant;
 
         return $this;
     }
