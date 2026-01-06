@@ -6,6 +6,7 @@ use App\Entity\Client;
 use App\Entity\Gerant;
 use App\Entity\Serveur;
 use App\Factory\AvisFactory;
+use App\Factory\CategoryFactory;
 use App\Factory\ClientFactory;
 use App\Factory\CommandeFactory;
 use App\Factory\GerantFactory;
@@ -52,6 +53,10 @@ class AppFixtures extends Fixture
             'isVerified' => true
         ]);
 
+        CategoryFactory::createOne(['name' => 'Entrée']);
+        CategoryFactory::createOne(['name' => 'Plat']);
+        CategoryFactory::createOne(['name' => 'Dessert']);
+
         $mainResto = RestaurantFactory::createOne([
             'nom' => 'Le Gourmet Symfony',
             'estOuvert' => 'Ouvert',
@@ -61,10 +66,28 @@ class AppFixtures extends Fixture
         $tousLesRestos = array_merge([$mainResto], $otherRestos);
 
         foreach ($tousLesRestos as $restaurant) {
-            $platsDuResto = PlatsFactory::createMany(15, [
-                'restaurant' => $restaurant,
-                'platsStocks' => StockFactory::new()->many(1),
-            ]);
+
+            $platsDuResto = [];
+
+            for ($i = 0; $i < 15; $i++) {
+                $rand = rand(1, 100);
+
+                if ($rand <= 80) {
+                    $category = CategoryFactory::find(['name' => 'Plat']);
+                } elseif ($rand <= 90) {
+                    $category = CategoryFactory::find(['name' => 'Entrée']);
+                } else {
+                    $category = CategoryFactory::find(['name' => 'Dessert']);
+                }
+
+                $plat = PlatsFactory::createOne([
+                    'restaurant' => $restaurant,
+                    'platsStocks' => StockFactory::new()->many(1),
+                    'category' => $category,
+                ]);
+
+                $platsDuResto[] = $plat;
+            }
 
             $commandes = CommandeFactory::createMany(5, [
                 'restaurant' => $restaurant,
@@ -73,7 +96,8 @@ class AppFixtures extends Fixture
             ]);
 
             foreach ($commandes as $commande) {
-                $platAuHasard = $platsDuResto[array_rand($platsDuResto)];
+                $randomKey = array_rand($platsDuResto);
+                $platAuHasard = $platsDuResto[$randomKey];
 
                 LigneCommandeFactory::createMany(rand(1, 4), [
                     'commande' => $commande,
