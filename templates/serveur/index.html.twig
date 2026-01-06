@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Pro{% endblock %}
+
+{% block body %}
+    <div class="container text-center mt-5">
+        <h1 class="display-4 mb-5"> Bienvenue, {{ app.user.prenom }}</h1>
+
+        <div class="row justify-content-center gap-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 border-primary">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-5">
+                        <h2 class="h1">🛎️</h2>
+                        <h3 class="card-title mt-3">Commandes</h3>
+                        <p class="text-muted">Gérer les commandes en cours (Cuisine)</p>
+                        <a href="{{ path('app_serveur_commandes') }}" class="btn btn-primary btn-lg mt-3 stretched-link">
+                            Voir les commandes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100 border-success">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center p-5">
+                        <h2 class="h1">🍝</h2>
+                        <h3 class="card-title mt-3">Menu du Restaurant</h3>
+                        <p class="text-muted">Voir la liste des plats proposés</p>
+                        <a href="{{ path('app_serveur_plats') }}" class="btn btn-success btn-lg mt-3 stretched-link">
+                            Voir les plats
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
