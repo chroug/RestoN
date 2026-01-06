@@ -30,6 +30,39 @@ class RestaurantRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByComplexSearch(?string $search, ?string $sort): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.avis', 'a')
+            ->addSelect('AVG(a.note) as HIDDEN avg_note')
+            ->addSelect('COUNT(a.id) as HIDDEN nb_avis')
+            ->groupBy('r.id');
+
+        if ($search) {
+            $qb->andWhere('r.nom LIKE :val OR r.adresse LIKE :val')
+                ->setParameter('val', '%' . $search . '%');
+        }
+
+        switch ($sort) {
+            case 'note_desc':
+                $qb->orderBy('avg_note', 'DESC');
+                break;
+            case 'note_asc':
+                $qb->orderBy('avg_note', 'ASC');
+                break;
+            case 'avis_desc':
+                $qb->orderBy('nb_avis', 'DESC');
+                break;
+            case 'avis_asc':
+                $qb->orderBy('nb_avis', 'ASC');
+                break;
+            default:
+                $qb->orderBy('r.nom', 'ASC');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Restaurant[] Returns an array of Restaurant objects
     //     */
