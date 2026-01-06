@@ -4,12 +4,14 @@ namespace App\DataFixtures;
 
 use App\Entity\Client;
 use App\Entity\Gerant;
+use App\Entity\Patron;
 use App\Entity\Serveur;
 use App\Factory\AvisFactory;
 use App\Factory\ClientFactory;
 use App\Factory\CommandeFactory;
 use App\Factory\GerantFactory;
 use App\Factory\LigneCommandeFactory;
+use App\Factory\PatronFactory;
 use App\Factory\PlatsFactory;
 use App\Factory\RestaurantFactory;
 use App\Factory\ServeurFactory;
@@ -30,20 +32,16 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $passwordGerant = $this->hasher->hashPassword(new Gerant(), 'password');
+        $passwordPatron = $this->hasher->hashPassword(new Patron(), 'password');
         $passwordServeur = $this->hasher->hashPassword(new Serveur(), 'password');
         $passwordClient = $this->hasher->hashPassword(new Client(), 'password');
 
         GerantFactory::createOne([
             'email' => 'admin@resto.com',
             'password' => $passwordGerant,
-            'nom' => 'Patron',
-            'prenom' => 'Chef',
+            'nom' => 'Admin',
+            'prenom' => 'System',
             'roles' => ['ROLE_GERANT'],
-            'isVerified' => true
-        ]);
-
-        ServeurFactory::createMany(3, [
-            'password' => $passwordServeur,
             'isVerified' => true
         ]);
 
@@ -52,13 +50,33 @@ class AppFixtures extends Fixture
             'isVerified' => true
         ]);
 
+        $patronPrincipal = PatronFactory::createOne([
+            'email' => 'patron@gourmet.com',
+            'password' => $passwordPatron,
+            'roles' => ['ROLE_PATRON'],
+            'isVerified' => true
+        ]);
+
         $mainResto = RestaurantFactory::createOne([
             'nom' => 'Le Gourmet Symfony',
             'estOuvert' => 'Ouvert',
+            'patron' => $patronPrincipal,
         ]);
 
-        $otherRestos = RestaurantFactory::createMany(11);
-        $tousLesRestos = array_merge([$mainResto], $otherRestos);
+        $autresRestos = [];
+        $autresPatrons = PatronFactory::createMany(5, [
+            'password' => $passwordPatron,
+            'roles' => ['ROLE_PATRON'],
+            'isVerified' => true
+        ]);
+
+        foreach ($autresPatrons as $patron) {
+            $autresRestos[] = RestaurantFactory::createOne([
+                'patron' => $patron
+            ]);
+        }
+
+        $tousLesRestos = array_merge([$mainResto], $autresRestos);
 
         foreach ($tousLesRestos as $restaurant) {
             $platsDuResto = PlatsFactory::createMany(15, [
@@ -66,10 +84,16 @@ class AppFixtures extends Fixture
                 'platsStocks' => StockFactory::new()->many(1),
             ]);
 
+            $serveursDuResto = ServeurFactory::createMany(2, [
+                'password' => $passwordServeur,
+                'isVerified' => true,
+                'restaurant' => $restaurant
+            ]);
+
             $commandes = CommandeFactory::createMany(5, [
                 'restaurant' => $restaurant,
                 'client' => ClientFactory::random(),
-                'serveur' => ServeurFactory::random(),
+                'serveur' => $serveursDuResto[array_rand($serveursDuResto)],
             ]);
 
             foreach ($commandes as $commande) {
