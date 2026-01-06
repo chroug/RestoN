@@ -49,21 +49,26 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         $user = $token->getUser();
+        $roles = $user->getRoles();
 
-        if (in_array('ROLE_GERANT', $user->getRoles())) {
+        if (in_array('ROLE_GERANT', $roles, true)) {
             return new RedirectResponse($this->urlGenerator->generate('app_admin_plats_index'));
-        } elseif (in_array('ROLE_PATRON', $user->getRoles())) {
+        }
+
+        if (in_array('ROLE_PATRON', $roles, true)) {
             $restaurant = $user->getRestaurant();
             if ($restaurant) {
                 return new RedirectResponse($this->urlGenerator->generate('app_admin_restaurant_edit', [
                     'id' => $restaurant->getId()
                 ]));
             }
-        } elseif (in_array('ROLE_SERVEUR', $user->getRoles())) {
-            return new RedirectResponse($this->urlGenerator->generate('app_serveur_commandes'));
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('app_home'));
+        if (in_array('ROLE_SERVEUR', $roles, true)) {
+            return new RedirectResponse($this->urlGenerator->generate('app_serveur_dashboard'));
+        }
+
+        return new RedirectResponse($this->urlGenerator->generate('app_mes_commandes'));
     }
 
     protected function getLoginUrl(Request $request): string
