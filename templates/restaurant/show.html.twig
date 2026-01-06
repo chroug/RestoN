@@ -6,24 +6,17 @@
     <div class="container-fluid px-4" style="margin-top: 30px;">
 
         <div class="row">
-
-
             <div class="col-md-2 d-none d-md-block">
                 <div class="sticky-top" style="top: 20px;">
                     <div class="card shadow-sm border-primary">
                         <div class="card-header bg-primary text-white">
                             <h5 class="mb-0"><i class="bi bi-basket"></i> Mon Panier</h5>
                         </div>
-                        <div class="card-body">
-                            {# ICI : idealement, plus tard un {{ render(...) }} #}
-                            <p class="small text-muted">Votre panier est vide pour le moment.</p>
 
-                            <hr>
-                            <div class="d-flex justify-content-between fw-bold">
-                                <span>Total</span>
-                                <span>0.00 €</span>
-                            </div>
+                        <div class="card-body">
+                            {{ render(controller('App\\Controller\\CartController::summary')) }}
                         </div>
+
                         <div class="card-footer p-2">
                             <a href="{{ path('cart_index') }}" class="btn btn-success w-100">
                                 PAYER
@@ -33,6 +26,7 @@
                 </div>
             </div>
 
+            {# --- COLONNE CENTRALE : PLATS ET AVIS --- #}
             <div class="col-md-7">
                 <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
                     <h1 class="h2 m-0">Carte : {{ restaurant.nom }}</h1>
@@ -73,14 +67,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">Avis des clients</h3>
                         {% if is_granted('ROLE_CLIENT') %}
+                            {# Correction du bouton ici (pas de button dans un a) #}
                             <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold">
-                            <button class="btn btn-warning text-dark fw-bold">
                                 Écrire un avis
-                            </button>
-                        {% endif %}
                             </a>
+                        {% endif %}
                     </div>
-
                     {% if restaurant.avis is empty %}
                         <p class="text-muted fst-italic">Aucun avis pour le moment.</p>
                     {% else %}
