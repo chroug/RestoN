@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Restaurants{% endblock %}
+{% block title %}Accueil - Restaurants{% endblock %}
 
 {% block body %}
     <div class="container" style="margin-top: 30px;">
+
 
         {% if is_granted('ROLE_CLIENT') %}
             <div class="p-4 mb-4 bg-light rounded-3 shadow-sm border">
@@ -81,6 +82,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm border-0 overflow-hidden">
 
+
                         <div class="ratio ratio-21x9 bg-light">
                             <iframe
                                 src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
@@ -91,6 +93,7 @@
                         </div>
 
                         <div class="card-body text-center d-flex flex-column">
+
                             <h3 class="card-title fw-bold mt-2">{{ restaurant.nom }}</h3>
 
                             <p class="text-muted small mb-3 flex-grow-1">
