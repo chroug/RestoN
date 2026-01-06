@@ -58,12 +58,12 @@ class AppFixtures extends Fixture
         ]);
 
         $otherRestos = RestaurantFactory::createMany(11);
-
         $tousLesRestos = array_merge([$mainResto], $otherRestos);
 
         foreach ($tousLesRestos as $restaurant) {
-            $platsDuResto = PlatsFactory::createMany(10, [
+            $platsDuResto = PlatsFactory::createMany(15, [
                 'restaurant' => $restaurant,
+                'platsStocks' => StockFactory::new()->many(1),
             ]);
 
             $commandes = CommandeFactory::createMany(5, [
@@ -84,11 +84,6 @@ class AppFixtures extends Fixture
             AvisFactory::createMany(rand(3, 8), [
                 'restaurant' => $restaurant,
                 'client' => ClientFactory::random(),
-            ]);
-
-            PlatsFactory::createMany(10, [
-                'restaurant' => $restaurant,
-                'platsStocks' => StockFactory::new()->many(1),
             ]);
         }
     }
