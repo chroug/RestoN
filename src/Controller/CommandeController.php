@@ -51,6 +51,7 @@ class CommandeController extends AbstractController
         $commande->setDate(new \DateTimeImmutable());
         $commande->setStatut(1);
         $commande->setClient($this->getUser());
+
         $choix = $request->request->get('type', 'emporter');
         $commande->setAemporter($choix === 'emporter');
         $commande->setNumeroTable(0);
@@ -62,12 +63,23 @@ class CommandeController extends AbstractController
             $plat = $platsRepository->find($id);
 
             if ($plat) {
+                $stockEntity = $plat->getPlatsStocks()->first();
+
+                if (!$stockEntity || $stockEntity->getQuantite() < $quantite) {
+                    $this->addFlash('danger', "Désolé, rupture de stock pour le plat : " . $plat->getNom());
+                    return $this->redirectToRoute('cart_index');
+                }
+
+                $nouveauStock = $stockEntity->getQuantite() - $quantite;
+                $stockEntity->setQuantite($nouveauStock);
+
                 if (!$restaurantTrouve && $plat->getRestaurant()) {
                     $restaurantTrouve = $plat->getRestaurant();
                     $commande->setRestaurant($restaurantTrouve);
                 }
 
                 $total += $plat->getPrix() * $quantite;
+
                 for ($i = 0; $i < $quantite; $i++) {
                     $commande->addPlat($plat);
                 }
@@ -82,6 +94,7 @@ class CommandeController extends AbstractController
         }
 
         $em->persist($commande);
+
         $em->flush();
 
         $session->remove('cart');
