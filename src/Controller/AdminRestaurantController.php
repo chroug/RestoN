@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Horaire;
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
+use App\Repository\CommandeRepository; // 👈 AJOUT IMPORTANT
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +18,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AdminRestaurantController extends AbstractController
 {
     #[Route('/{id}/edit', name: 'app_admin_restaurant_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Restaurant $restaurant, EntityManagerInterface $em): Response
+    public function edit(
+        Request $request,
+        Restaurant $restaurant,
+        EntityManagerInterface $em,
+        UserRepository $userRepository,
+        CommandeRepository $commandeRepository // 👈 INJECTION ICI
+    ): Response
     {
         $user = $this->getUser();
 
@@ -32,6 +40,23 @@ class AdminRestaurantController extends AbstractController
             }
         }
 
+        // --- 📊 VRAIES STATISTIQUES ---
+
+        // 1. Les Serveurs (Filtrés par rôle)
+        $allStaff = $userRepository->findBy(['restaurant' => $restaurant]);
+        $serveurs = array_filter($allStaff, function($u) {
+            return in_array('ROLE_SERVEUR', $u->getRoles());
+        });
+
+        // 2. Le Chiffre d'Affaires Réel
+        $chiffreAffaires = $commandeRepository->findChiffreAffaires($restaurant);
+
+        // 3. Le Nombre de Commandes du Jour Réel
+        $nbCommandesJour = $commandeRepository->countCommandesDuJour($restaurant);
+
+        // --- FIN STATISTIQUES ---
+
+        // Gestion des horaires par défaut (si vide)
         if ($restaurant->getHoraires()->isEmpty()) {
             $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
             foreach ($jours as $jour) {
@@ -61,6 +86,10 @@ class AdminRestaurantController extends AbstractController
         return $this->render('admin_restaurant/edit.html.twig', [
             'restaurant' => $restaurant,
             'form' => $form,
+            // On envoie les vraies données à la vue
+            'serveurs' => $serveurs,
+            'chiffreAffaires' => $chiffreAffaires,
+            'nbCommandesJour' => $nbCommandesJour,
         ]);
     }
 }

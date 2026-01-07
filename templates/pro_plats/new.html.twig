@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Plat{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h1 class="h2"> Créer un nouveau plat</h1>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+                {{ form_start(form) }}
+
+                <div class="mb-3">
+                    {{ form_row(form.nom) }}
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form_row(form.category) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.prix) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(form.description) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_row(form.image) }}
+                    <div class="form-text text-muted">Format accepté : JPG, PNG, WEBP (Max 2Mo)</div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ path('app_pro_plats_index') }}" class="btn btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-success fw-bold">
+                        <i class="bi bi-check-circle"></i> Enregistrer le plat
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

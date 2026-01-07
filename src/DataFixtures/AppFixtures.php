@@ -79,7 +79,6 @@ class AppFixtures extends Fixture
 
         foreach ($tousLesRestos as $restaurant) {
 
-
             $platsDuResto = [];
 
             for ($i = 0; $i < 15; $i++) {
@@ -97,33 +96,43 @@ class AppFixtures extends Fixture
                     'restaurant' => $restaurant,
                     'platsStocks' => StockFactory::new()->many(1),
                     'category' => $category,
+                    'prix' => rand(1000, 4000) / 100
                 ]);
 
                 $platsDuResto[] = $plat;
             }
 
-            
             $serveursDuResto = ServeurFactory::createMany(2, [
                 'password' => $passwordServeur,
                 'isVerified' => true,
                 'restaurant' => $restaurant
             ]);
 
-
-            $commandes = CommandeFactory::createMany(5, [
+            $commandes = CommandeFactory::createMany(15, [
                 'restaurant' => $restaurant,
                 'client' => ClientFactory::random(),
                 'serveur' => $serveursDuResto[array_rand($serveursDuResto)],
+                'date' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('-1 month', 'now')),
+                'total' => 0
             ]);
 
             foreach ($commandes as $commande) {
-                $randomKey = array_rand($platsDuResto);
-                $platAuHasard = $platsDuResto[$randomKey];
+                $totalCommande = 0;
+                $nbLignes = rand(1, 5);
 
-                LigneCommandeFactory::createMany(rand(1, 4), [
-                    'commande' => $commande,
-                    'plat' => $platAuHasard,
-                ]);
+                for ($k = 0; $k < $nbLignes; $k++) {
+                    $platAuHasard = $platsDuResto[array_rand($platsDuResto)];
+
+                    LigneCommandeFactory::createOne([
+                        'commande' => $commande,
+                        'plat' => $platAuHasard,
+                        'quantite' => 1,
+                    ]);
+
+                    $totalCommande += $platAuHasard->getPrix();
+                }
+
+                $commande->setTotal($totalCommande);
             }
 
             AvisFactory::createMany(rand(3, 8), [
@@ -131,5 +140,12 @@ class AppFixtures extends Fixture
                 'client' => ClientFactory::random(),
             ]);
         }
+
+        $manager->flush();
+    }
+
+    protected static function faker(): \Faker\Generator
+    {
+        return \Zenstruck\Foundry\faker();
     }
 }

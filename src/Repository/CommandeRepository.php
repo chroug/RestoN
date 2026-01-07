@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Commande;
+use App\Entity\Restaurant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,39 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
-    //    /**
-    //     * @return Commande[] Returns an array of Commande objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Calcule le Chiffre d'Affaires total du restaurant
+     */
+    public function findChiffreAffaires(Restaurant $restaurant): float
+    {
+        $result = $this->createQueryBuilder('c')
+            ->select('SUM(c.total)')
+            ->andWhere('c.restaurant = :resto')
+            ->setParameter('resto', $restaurant)
+            ->getQuery()
+            ->getSingleScalarResult();
 
-    //    public function findOneBySomeField($value): ?Commande
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $result ? (float) $result : 0.0;
+    }
+
+    /**
+     * Compte le nombre de commandes passées AUJOURD'HUI
+     */
+    public function countCommandesDuJour(Restaurant $restaurant): int
+    {
+
+        $debut = new \DateTime('today midnight');
+        $fin   = new \DateTime('tomorrow midnight');
+
+        return (int) $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.restaurant = :resto')
+            ->andWhere('c.date >= :debut')
+            ->andWhere('c.date < :fin')
+            ->setParameter('resto', $restaurant)
+            ->setParameter('debut', $debut)
+            ->setParameter('fin', $fin)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
