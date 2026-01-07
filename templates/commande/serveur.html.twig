@@ -4,7 +4,10 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Espace Serveur - Commandes</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-4 text-center">Espace Serveur - Commandes</h1>
+            <a href="{{ path('app_serveur_dashboard') }}" class="btn btn-secondary">Retour Dashboard</a>
+        </div>
 
         <table class="table table-hover table-bordered shadow-sm">
             <thead class="table-dark">
