@@ -161,7 +161,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h3 class="mb-0">Avis des clients</h3>
                         {% if is_granted('ROLE_CLIENT') %}
-                            {# Correction du bouton ici (pas de button dans un a) #}
                             <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold">
                                 Écrire un avis
                             </a>

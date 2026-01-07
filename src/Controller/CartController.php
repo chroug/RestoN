@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Commande;
@@ -22,17 +23,18 @@ class CartController extends AbstractController
     }
 
     #[Route('/cart/add/{id}', name: 'cart_add')]
-    public function add(int $id, CartService $cartService): Response
+    public function add(int $id, CartService $cartService, Request $request): Response
     {
         $cartService->add($id);
-        return $this->redirectToRoute('cart_index');
+        $this->addFlash('success', 'Plat ajouté au panier !');
+        return $this->redirect($request->headers->get('referer'));
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]
-    public function remove(int $id, CartService $cartService): Response
+    public function remove(int $id, CartService $cartService, Request $request): Response
     {
         $cartService->remove($id);
-        return $this->redirectToRoute('cart_index');
+        return $this->redirect($request->headers->get('referer'));
     }
     #[Route('/cart/validate', name: 'cart_validate')]
     public function validate(CartService $cartService, EntityManagerInterface $em): Response
