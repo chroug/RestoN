@@ -4,16 +4,14 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Plats;
-use App\Entity\Restaurant;
-use App\Entity\Stock;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 
 class PlatsType extends AbstractType
@@ -22,39 +20,28 @@ class PlatsType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Nom du plat'
+                'label' => 'Nom du plat',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Ex: Burger Maison'
+                ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description'
+                'label' => 'Description',
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3
+                ]
             ])
             ->add('prix', MoneyType::class, [
                 'label' => 'Prix',
-                'currency' => 'EUR'
+                'currency' => 'EUR',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => '15.00'
+                ]
             ])
 
-            ->add('restaurant', EntityType::class, [
-                'class' => Restaurant::class,
-                'choice_label' => 'nom',
-                'label' => 'Restaurant associé',
-                'placeholder' => 'Choisir un restaurant',
-            ])
-
-            ->add('image', FileType::class, [
-                'label' => 'Photo du plat',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File(
-                        maxSize: '2048k',
-                        mimeTypes: [
-                            'image/jpeg',
-                            'image/png',
-                            'image/webp',
-                        ],
-                        mimeTypesMessage: 'Merci d\'uploader une image valide (JPG, PNG, WEBP)'
-                    )
-                ],
-            ])
 
             ->add('category', EntityType::class, [
                 'class' => Category::class,
@@ -62,6 +49,25 @@ class PlatsType extends AbstractType
                 'label' => 'Catégorie',
                 'placeholder' => 'Choisir une catégorie',
                 'required' => false,
+                'attr' => ['class' => 'form-select']
+            ])
+
+            ->add('image', FileType::class, [
+                'label' => 'Photo du plat',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Merci d\'uploader une image valide (JPG, PNG, WEBP)',
+                    ])
+                ],
             ])
         ;
     }
