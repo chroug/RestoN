@@ -23,7 +23,19 @@
                         <td>{{ item.plat.nom }}</td>
 
                         <td style="padding: 10px;">{{ item.plat.prix }} €</td>
-                        <td style="padding: 10px;">x {{ item.quantity }}</td>
+                        <td style="padding: 10px;">
+                            <div class="input-group input-group-sm" style="width: 110px;">
+                                <a href="{{ path('cart_decrease', {'id': item.plat.id}) }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-dash"></i>
+                                </a>
+
+                                <span class="form-control text-center px-0 bg-white" readonly>{{ item.quantity }}</span>
+
+                                <a href="{{ path('cart_add', {'id': item.plat.id}) }}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-plus"></i>
+                                </a>
+                            </div>
+                        </td>
                         <td style="padding: 10px;">{{ item.plat.prix * item.quantity }} €</td>
                         <td style="padding: 10px;">
                             <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" style="   color: red; text-decoration: none;">

@@ -7,14 +7,24 @@
     <ul class="list-group list-group-flush mb-3">
         {% for item in items %}
             <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-start bg-transparent">
-                <div class="me-auto">
+                <div class="flex-grow-1 pe-2">
                     <div class="fw-bold small">{{ item.plat.nom }}</div>
-                    <div class="text-muted" style="font-size: 0.8em;">
-                        {{ item.plat.prix }} € x {{ item.quantity }}
+                    <div class="d-flex justify-content-between align-items-center mt-1 w-100">
+                        <small class="text-muted">{{ item.plat.prix }} €</small>
+                        <div class="d-flex align-items-center border rounded bg-white">
+                            <a href="{{ path('cart_decrease', {'id': item.plat.id}) }}"
+                               class="btn btn-sm btn-link text-decoration-none text-dark py-0 px-2 border-end hover-bg-light">
+                                -
+                            </a>
+                            <span class="px-2 small fw-bold">{{ item.quantity }}</span>
+                            <a href="{{ path('cart_add', {'id': item.plat.id}) }}"
+                               class="btn btn-sm btn-link text-decoration-none text-dark py-0 px-2 border-start hover-bg-light">
+                                +
+                            </a>
+                        </div>
                     </div>
                 </div>
-
-                <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" class="text-danger ms-2 text-decoration-none">
+                <a href="{{ path('cart_remove', {'id': item.plat.id}) }}" class="text-danger ms-2 text-decoration-none" title="Supprimer">
                     <i class="bi bi-x-circle-fill"></i>
                 </a>
             </li>
