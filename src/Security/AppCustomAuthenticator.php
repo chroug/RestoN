@@ -68,7 +68,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_serveur_dashboard'));
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('app_mes_commandes'));
+        return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
     protected function getLoginUrl(Request $request): string
