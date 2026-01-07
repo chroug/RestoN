@@ -62,6 +62,7 @@ class Restaurant
 
 
     #[ORM\OneToOne(inversedBy: 'restaurant', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Patron $patron = null;
 
     public function __construct()
