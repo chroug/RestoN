@@ -56,6 +56,20 @@ class CartService
         $session->set('cart', $cart);
     }
 
+    public function decrease(int $id): void
+    {
+        $panier = $this->requestStack->getSession()->get('cart', []);
+
+        if (!empty($panier[$id])) {
+            if ($panier[$id] > 1) {
+                $panier[$id]--;
+            } else {
+                unset($panier[$id]);
+            }
+        }
+        $this->requestStack->getSession()->set('cart', $panier);
+    }
+
     public function getFullCart(): array
     {
         $session = $this->requestStack->getSession();

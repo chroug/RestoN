@@ -26,8 +26,14 @@ class CartController extends AbstractController
     public function add(int $id, CartService $cartService, Request $request): Response
     {
         $cartService->add($id);
-        $this->addFlash('success', 'Plat ajouté au panier !');
-        return $this->redirect($request->headers->get('referer'));
+
+        $referer = $request->headers->get('referer');
+
+        if ($referer && !str_contains($referer, '/mon-panier')) {
+            $this->addFlash('success', 'Plat ajouté au panier !');
+        }
+
+        return $this->redirect($referer);
     }
 
     #[Route('/cart/remove/{id}', name: 'cart_remove')]
@@ -36,6 +42,14 @@ class CartController extends AbstractController
         $cartService->remove($id);
         return $this->redirect($request->headers->get('referer'));
     }
+
+    #[Route('/cart/decrease/{id}', name: 'cart_decrease')]
+    public function decrease(int $id, CartService $cartService, Request $request): Response
+    {
+        $cartService->decrease($id);
+        return $this->redirect($request->headers->get('referer'));
+    }
+
     #[Route('/cart/validate', name: 'cart_validate')]
     public function validate(CartService $cartService, EntityManagerInterface $em): Response
     {
