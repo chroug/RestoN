@@ -1,53 +1,83 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ plat.nom }}{% endblock %}
+{% block title %}{{ plat.nom }} - {{ plat.restaurant.nom }}{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+    <div class="container mt-5 mb-5">
+        <div class="mb-4">
+            <a href="{{ path('app_restaurant_show', {'id': plat.restaurant.id}) }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Retour au restaurant
+            </a>
+        </div>
 
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card border-0 shadow-lg overflow-hidden rounded-4">
+                    <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                         alt="{{ plat.nom }}"
+                         class="img-fluid w-100"
+                         style="height: 500px; object-fit: cover;">
+                </div>
+            </div>
 
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card border-0">
-                <div class="card-body p-0 ps-md-4">
-
-                    {# Badge Catégorie #}
+            <div class="col-md-6">
+                <div class="ps-md-4">
                     {% if plat.category %}
-                    <span class="badge bg-primary mb-2">{{ plat.category.name }}</span>
+                        {% set badgeColor = 'primary' %}
+                        {% if plat.category.name == 'Entrée' %}{% set badgeColor = 'info' %}
+                        {% elseif plat.category.name == 'Dessert' %}{% set badgeColor = 'warning' %}
+                        {% endif %}
+                        <span class="badge bg-{{ badgeColor }} mb-3 px-3 py-2 rounded-pill">
+                        {{ plat.category.name|upper }}
+                    </span>
                     {% endif %}
 
-                    <h1 class="display-5 fw-bold">{{ plat.nom }}</h1>
+                    <h1 class="display-4 fw-bold text-dark mb-2">{{ plat.nom }}</h1>
 
-
-                    <p class="text-muted mb-4">
-                        Proposé par : <strong>{{ plat.restaurant.nom }}</strong>
+                    <p class="text-muted fs-5 mb-4">
+                        Proposé par <strong class="text-dark border-bottom border-dark pb-1">{{ plat.restaurant.nom }}</strong>
                     </p>
 
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-2">À propos de ce plat</h5>
+                        <p class="lead text-secondary fs-6">
+                            {{ plat.description|default('Aucune description disponible pour ce plat délicieux. Laissez-vous tenter par la surprise du chef !') }}
+                        </p>
+                    </div>
 
-                    <h5 class="text-dark">Description</h5>
-                    <p class="lead fs-6 text-secondary">
-                        {{ plat.description|default('Aucune description pour ce plat.') }}
-                    </p>
+                    <hr class="my-4 opacity-10">
 
-                    <hr class="my-4">
+                    {% set stockTotal = 0 %}
+                    {% for stock in plat.platsStocks %}
+                        {% set stockTotal = stockTotal + stock.quantite %}
+                    {% endfor %}
 
+                    <div class="d-flex flex-column flex-xl-row align-items-xl-center gap-4 bg-light p-4 rounded-3 border">
 
-                    <div class="d-flex align-items-center justify-content-between mb-4">
                         <div>
-                            <span class="fs-2 fw-bold text-success">{{ plat.prix }} €</span>
+                            <span class="d-block text-muted small text-uppercase fw-bold">Prix</span>
+                            <span class="text-success fw-bold display-6">{{ plat.prix }}&nbsp;€</span>
                         </div>
 
-                        {% set stockTotal = 0 %}
-                        {% for stock in plat.platsStocks %}
-                        {% set stockTotal = stockTotal + stock.quantite %}
-                        {% endfor %}
-
-                        <div>
+                        <div class="flex-grow-1 w-100">
                             {% if stockTotal > 0 %}
-                            <span class="badge bg-success p-2">En stock ({{ stockTotal }})</span>
+                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-success btn-lg w-100 rounded-pill py-3 shadow-sm fw-bold">
+                                    Ajouter au panier <i class="bi bi-cart-plus ms-2"></i>
+                                </a>
+                                <div class="text-center mt-2">
+                                    <small class="text-success fw-bold">
+                                        <i class="bi bi-check-circle-fill"></i> En stock
+                                    </small>
+                                </div>
                             {% else %}
-                            <span class="badge bg-danger p-2">Rupture de stock</span>
+                                <button class="btn btn-secondary btn-lg w-100 rounded-pill py-3" disabled>
+                                    Ajouter au panier <i class="bi bi-cart-plus ms-2"></i>
+                                </button>
+                                <div class="text-center mt-2">
+                                    <small class="text-danger fw-bold">
+                                        <i class="bi bi-x-circle-fill"></i> Rupture de stock
+                                    </small>
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -56,5 +86,4 @@
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
