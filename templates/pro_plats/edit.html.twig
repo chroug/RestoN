@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Plat{% endblock %}
+
+{% block body %}
+    <div class="container mt-4" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <h1 class="h2"> Modifier : {{ plat.nom }}</h1>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                {{ form_start(form) }}
+
+                <div class="mb-3">
+                    {{ form_row(form.nom) }}
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form_row(form.category) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.prix) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_row(form.description) }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Image du plat</label>
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        {% if plat.image %}
+                            <img src="{{ asset('uploads/plats/' ~ plat.image) }}" alt="Image actuelle" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                            <span class="text-muted small">Image actuelle</span>
+                        {% else %}
+                            <span class="text-muted small fst-italic">Pas d'image actuellement</span>
+                        {% endif %}
+                    </div>
+                    {{ form_widget(form.image) }}
+                    <div class="form-text text-muted">Laissez vide pour conserver l'image actuelle.</div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{{ path('app_pro_plats_index') }}" class="btn btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-warning fw-bold">
+                        <i class="bi bi-check-circle"></i> Mettre à jour
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
