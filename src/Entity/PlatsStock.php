@@ -13,11 +13,9 @@ class PlatsStock
     #[ORM\Column]
     private ?int $id = null;
 
-    // 👇 Voici le champ quantité que tu voulais
     #[ORM\Column]
     private ?int $quantite = null;
 
-    // 👇 Le lien avec le Plat (Indispensable pour savoir de quel plat on parle)
     #[ORM\ManyToOne(inversedBy: 'platsStocks')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Plats $plat = null;

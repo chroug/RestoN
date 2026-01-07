@@ -183,4 +183,13 @@ class Plats
 
         return $this;
     }
+
+    public function getStockActuel(): int
+    {
+        if ($this->platsStocks->isEmpty()) {
+            return 0;
+        }
+
+        return $this->platsStocks->first()->getQuantite();
+    }
 }

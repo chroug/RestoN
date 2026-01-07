@@ -35,7 +35,8 @@ class CommandeController extends AbstractController
     #[Route('/commande/valider', name: 'app_commande_valider')]
     public function valider(Request $request, SessionInterface $session, PlatsRepository $platsRepository, EntityManagerInterface $em): Response
     {
-        if (!$this->getUser()) {
+        $user = $this->getUser();
+        if (!$user) {
             $this->addFlash('danger', 'Connectez-vous pour commander !');
             return $this->redirectToRoute('app_login');
         }
@@ -50,7 +51,8 @@ class CommandeController extends AbstractController
         $commande = new Commande();
         $commande->setDate(new \DateTimeImmutable());
         $commande->setStatut(1);
-        $commande->setClient($this->getUser());
+        $commande->setClient($user);
+
         $choix = $request->request->get('type', 'emporter');
         $commande->setAemporter($choix === 'emporter');
         $commande->setNumeroTable(0);
@@ -58,20 +60,48 @@ class CommandeController extends AbstractController
         $total = 0;
         $restaurantTrouve = null;
 
+        $panierModifie = false;
+
         foreach ($panier as $id => $quantite) {
             $plat = $platsRepository->find($id);
 
             if ($plat) {
+
+                $stockEntity = $plat->getPlatsStocks()->first();
+                $stockDispo = $stockEntity ? $stockEntity->getQuantite() : 0;
+
+                if ($stockDispo < $quantite) {
+                    if ($stockDispo > 0) {
+                        $panier[$id] = $stockDispo;
+                        $this->addFlash('warning', "La quantité de '" . $plat->getNom() . "' a été ajustée à " . $stockDispo . " (stock maximum).");
+                    } else {
+                        unset($panier[$id]);
+                        $this->addFlash('danger', "Le plat '" . $plat->getNom() . "' a été retiré car il est en rupture de stock.");
+                    }
+
+                    $panierModifie = true;
+                    continue;
+                }
+
+                $stockEntity->setQuantite($stockDispo - $quantite);
+
                 if (!$restaurantTrouve && $plat->getRestaurant()) {
                     $restaurantTrouve = $plat->getRestaurant();
                     $commande->setRestaurant($restaurantTrouve);
                 }
 
                 $total += $plat->getPrix() * $quantite;
+
                 for ($i = 0; $i < $quantite; $i++) {
                     $commande->addPlat($plat);
                 }
             }
+        }
+
+        if ($panierModifie) {
+            $session->set('cart', $panier);
+
+            return $this->redirectToRoute('cart_index');
         }
 
         $commande->setTotal($total);
