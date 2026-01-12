@@ -4,82 +4,110 @@
 
 {% block stylesheets %}
     <style>
+        /* 1. On interdit le scroll sur toute la page */
         body {
+            background-color: #f0f2f5;
             overflow: hidden;
         }
+
+        /* 2. Le main prend exactement la hauteur restante (Ecran - Navbar) */
+        /* Note: Ajuste '76px' si ta navbar est plus grande ou plus petite */
         main {
+            height: calc(100vh - 76px);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            padding-bottom: 20px;
+            padding: 0; /* Zéro padding pour éviter le dépassement */
         }
+
+        .bg-image-register {
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+        }
+
+        /* 3. Sécurité : Si l'écran est vraiment petit, on scrolle DANS la carte, pas la page */
+        .scrollable-body {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        /* On masque la scrollbar interne pour faire plus joli (optionnel) */
+        .scrollable-body::-webkit-scrollbar { width: 0; background: transparent; }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-md-6 col-lg-5">
 
-                <div class="card shadow-sm border-0 rounded-3" style="max-height: 85vh;">
-                    <div class="card-body p-4 overflow-auto">
-                        <div class="text-center mb-3">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 50px; height: 50px;">
-                                <i class="bi bi-person-plus-fill fs-4"></i>
+            <div class="col-md-11 col-lg-10 h-75"> <div class="card shadow-lg border-0 rounded-4 overflow-hidden h-100">
+                    <div class="row g-0 h-100">
+
+                        <div class="col-md-6 d-none d-md-block position-relative bg-image-register">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+                            <div class="position-relative h-100 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
+                                <div class="mb-4"><i class="fas fa-utensils fa-3x"></i></div>
+                                <h2 class="fw-bold display-6 mb-3" style="font-family: 'Playfair Display', serif;">Bienvenue</h2>
+                                <p class="lead fs-6">Rejoignez RestoN dès maintenant.</p>
                             </div>
-                            <h3 class="fw-bold mb-0">Créer un compte</h3>
                         </div>
-                        {% for flash_error in app.flashes('verify_email_error') %}
-                            <div class="alert alert-danger py-2 small" role="alert">
-                                <i class="bi bi-exclamation-triangle-fill"></i> {{ flash_error }}
-                            </div>
-                        {% endfor %}
-                        {{ form_start(registrationForm) }}
-                        {% if not registrationForm.vars.valid %}
-                            <div class="alert alert-danger py-2 small">
+
+                        <div class="col-md-6 bg-white h-100">
+                            <div class="card-body p-4 p-lg-5 h-100 d-flex flex-column justify-content-center scrollable-body">
+
+                                <div class="text-center mb-3">
+                                    <h3 class="fw-bold mb-0 text-dark">Créer un compte</h3>
+                                </div>
+
+                                {% for flash_error in app.flashes('verify_email_error') %}
+                                    <div class="alert alert-danger py-2 small" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill"></i> {{ flash_error }}
+                                    </div>
+                                {% endfor %}
+
+                                {{ form_start(registrationForm) }}
                                 {{ form_errors(registrationForm) }}
+
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        {{ form_row(registrationForm.nom, {'label': false, 'attr': {'placeholder': 'Nom', 'class': 'form-control'}}) }}
+                                    </div>
+                                    <div class="col-6">
+                                        {{ form_row(registrationForm.prenom, {'label': false, 'attr': {'placeholder': 'Prénom', 'class': 'form-control'}}) }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    {{ form_row(registrationForm.telephone, {'label': false, 'attr': {'placeholder': 'Téléphone', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="mb-2">
+                                    {{ form_row(registrationForm.email, {'label': false, 'attr': {'placeholder': 'Email', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="mb-2">
+                                    {{ form_row(registrationForm.plainPassword, {'label': false, 'attr': {'placeholder': 'Mot de passe', 'class': 'form-control'}}) }}
+                                </div>
+                                <div class="mb-2 small">
+                                    {{ form_row(registrationForm.agreeTerms) }}
+                                </div>
+
+                                <div class="d-grid gap-2 mb-3">
+                                    <button type="submit" class="btn btn-primary py-2 fw-bold">
+                                        S'inscrire
+                                    </button>
+                                </div>
+
+                                {{ form_end(registrationForm) }}
+
+                                <div class="text-center">
+                                    <p class="mb-0 small text-muted">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Connexion</a></p>
+                                </div>
+
                             </div>
-                        {% endif %}
-                        <div class="row g-2 mb-2">
-                            <div class="col-6">
-                                {{ form_row(registrationForm.nom, {'label': false, 'attr': {'placeholder': 'Nom', 'class': 'form-control-sm'}}) }}
-                            </div>
-                            <div class="col-6">
-                                {{ form_row(registrationForm.prenom, {'label': false, 'attr': {'placeholder': 'Prénom', 'class': 'form-control-sm'}}) }}
-                            </div>
                         </div>
-
-                        <div class="mb-2">
-                            {{ form_row(registrationForm.telephone, {'label': false, 'attr': {'placeholder': 'Téléphone', 'class': 'form-control-sm'}}) }}
-                        </div>
-                        <hr class="my-2 opacity-25">
-                        <div class="mb-2">
-                            {{ form_row(registrationForm.email, {'label': false, 'attr': {'placeholder': 'Email', 'class': 'form-control-sm'}}) }}
-                        </div>
-
-                        <div class="mb-2">
-                            {{ form_row(registrationForm.plainPassword, {'label': false, 'attr': {'placeholder': 'Mot de passe', 'class': 'form-control-sm'}}) }}
-                        </div>
-
-                        <div class="mb-3 small">
-                            {{ form_row(registrationForm.agreeTerms) }}
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                S'inscrire <i class="bi bi-arrow-right-short"></i>
-                            </button>
-                        </div>
-
-                        {{ form_end(registrationForm) }}
-
                     </div>
-
-                    <div class="card-footer bg-light text-center py-2">
-                        <p class="mb-0 small text-muted">Déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary fw-bold text-decoration-none">Se connecter</a></p>
-                    </div>
-
                 </div>
             </div>
         </div>
