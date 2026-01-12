@@ -89,4 +89,15 @@ class PatronServeurController extends AbstractController
             'editMode' => true
         ]);
     }
+
+    #[Route('/{id}/delete', name: 'app_patron_serveur_delete')]
+    public function delete(User $serveur, EntityManagerInterface $em): Response
+    {
+        if ($serveur->getRestaurant() === $this->getUser()->getRestaurant()) {
+            $em->remove($serveur);
+            $em->flush();
+            $this->addFlash('success', 'Serveur supprimé.');
+        }
+        return $this->redirectToRoute('app_patron_serveur_index');
+    }
 }
