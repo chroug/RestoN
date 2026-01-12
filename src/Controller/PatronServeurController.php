@@ -61,4 +61,32 @@ class PatronServeurController extends AbstractController
             'editMode' => false
         ]);
     }
+
+    #[Route('/{id}/edit', name: 'app_patron_serveur_edit')]
+    public function edit(User $serveur, Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    {
+        if ($serveur->getRestaurant() !== $this->getUser()->getRestaurant()) {
+            throw $this->createAccessDeniedException("Vous ne pouvez pas modifier ce serveur.");
+        }
+
+        $form = $this->createForm(ServeurType::class, $serveur, ['is_edit' => true]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $password = $form->get('plainPassword')->getData();
+            if ($password) {
+                $serveur->setPassword($hasher->hashPassword($serveur, $password));
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Serveur modifié avec succès !');
+            return $this->redirectToRoute('app_patron_serveur_index');
+        }
+
+        return $this->render('patron_serveur/new.html.twig', [
+            'form' => $form->createView(),
+            'editMode' => true
+        ]);
+    }
 }
