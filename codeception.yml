@@ -1,0 +1,27 @@
+namespace: App\Tests
+params:
+    - .env.test
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/Support
+    envs: tests/_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunProcess
+suites:
+    functional:
+        path: Controller
+        actor: Support\ControllerTester
+        modules:
+            enabled:
+                - Symfony:
+                      app_path: 'src'
+                      environment: 'test'
+                - Doctrine:
+                      depends: Symfony
+                      cleanup: true
+
+                - Asserts
