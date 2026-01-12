@@ -23,13 +23,26 @@
             <div class="col-md-6">
                 <div class="ps-md-4">
                     {% if plat.category %}
-                        {% set badgeColor = 'primary' %}
-                        {% if plat.category.name == 'Entrée' %}{% set badgeColor = 'info' %}
-                        {% elseif plat.category.name == 'Dessert' %}{% set badgeColor = 'warning' %}
+                        {% if plat.category.name == 'Entrée' %}
+                            <span class="badge bg-success mb-3 px-3 py-2 rounded-pill">
+                                {{ plat.category.name|upper }}
+                            </span>
+
+                        {% elseif plat.category.name == 'Plat' %}
+                            <span class="badge text-white mb-3 px-3 py-2 rounded-pill" style="background-color: #fd7e14;">
+                                {{ plat.category.name|upper }}
+                            </span>
+
+                        {% elseif plat.category.name == 'Dessert' %}
+                            <span class="badge bg-warning text-dark mb-3 px-3 py-2 rounded-pill">
+                                {{ plat.category.name|upper }}
+                            </span>
+
+                        {% else %}
+                            <span class="badge bg-secondary mb-3 px-3 py-2 rounded-pill">
+                                {{ plat.category.name|upper }}
+                            </span>
                         {% endif %}
-                        <span class="badge bg-{{ badgeColor }} mb-3 px-3 py-2 rounded-pill">
-                        {{ plat.category.name|upper }}
-                    </span>
                     {% endif %}
 
                     <h1 class="display-4 fw-bold text-dark mb-2">{{ plat.nom }}</h1>
@@ -41,7 +54,7 @@
                     <div class="mb-5">
                         <h5 class="fw-bold mb-2">À propos de ce plat</h5>
                         <p class="lead text-secondary fs-6">
-                            {{ plat.description|default('Aucune description disponible pour ce plat délicieux. Laissez-vous tenter par la surprise du chef !') }}
+                            {{ plat.description|default('Aucune description disponible pour ce plat.') }}
                         </p>
                     </div>
 
