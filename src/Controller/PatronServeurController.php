@@ -30,4 +30,35 @@ class PatronServeurController extends AbstractController
             'serveurs' => $serveurs,
         ]);
     }
+
+    #[Route('/new', name: 'app_patron_serveur_new')]
+    public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    {
+        $serveur = new User();
+
+        $serveur->setRestaurant($this->getUser()->getRestaurant());
+
+        $serveur->setRoles(['ROLE_SERVEUR']);
+
+        $form = $this->createForm(ServeurType::class, $serveur, ['is_edit' => false]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $password = $form->get('plainPassword')->getData();
+            if ($password) {
+                $serveur->setPassword($hasher->hashPassword($serveur, $password));
+            }
+
+            $em->persist($serveur);
+            $em->flush();
+
+            $this->addFlash('success', 'Le serveur a bien été ajouté !');
+            return $this->redirectToRoute('app_patron_serveur_index');
+        }
+
+        return $this->render('patron_serveur/new.html.twig', [
+            'form' => $form->createView(),
+            'editMode' => false
+        ]);
+    }
 }
