@@ -38,32 +38,28 @@ class PatronServeurController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
-        MailerInterface $mailer // 👈 On injecte le service Mailer
+        MailerInterface $mailer
     ): Response
     {
         $serveur = new User();
         $serveur->setRestaurant($this->getUser()->getRestaurant());
         $serveur->setRoles(['ROLE_SERVEUR']);
+        $serveur->setIsVerified(true);
 
-        // Assure-toi que ton ServeurType n'a PAS de champ 'plainPassword' (comme vu juste avant)
         $form = $this->createForm(ServeurType::class, $serveur, ['is_edit' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // 1. GÉNÉRATION D'UN MOT DE PASSE ALÉATOIRE
-            // On génère une chaîne de 8 caractères au hasard (ex: a1b2c3d4)
             $plainPassword = bin2hex(random_bytes(4));
 
-            // 2. HASHAGE ET SAUVEGARDE
             $serveur->setPassword($hasher->hashPassword($serveur, $plainPassword));
 
             $em->persist($serveur);
             $em->flush();
 
-            // 3. ENVOI DE L'EMAIL 📧
             $email = (new Email())
-                ->from('no-reply@reston.fr') // Mets l'adresse configurée dans ton .env
+                ->from('no-reply@reston.fr')
                 ->to($serveur->getEmail())
                 ->subject('Bienvenue chez RestoN - Vos accès')
                 ->html(
@@ -75,7 +71,7 @@ class PatronServeurController extends AbstractController
                     '<li><strong>Mot de passe provisoire :</strong> ' . $plainPassword . '</li>' .
                     '</ul>' .
                     '<p>Pensez à changer votre mot de passe après la première connexion.</p>' .
-                    '<a href="http://127.0.0.1:8000/login">Se connecter</a>' // Adapte l'URL si besoin
+                    '<a href="http://127.0.0.1:8000/login">Se connecter</a>'
                 );
 
             $mailer->send($email);
