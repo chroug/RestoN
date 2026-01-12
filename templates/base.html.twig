@@ -1,131 +1,231 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}RestoN{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🍽️</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}RestoN - Le goût avant tout{% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍔</text></svg>">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #FF5722;       /* Orange Vif */
+            --primary-hover: #E64A19; /* Orange Foncé */
+            --dark: #2D3436;          /* Noir Anthracite */
+            --light: #F8F9FA;         /* Gris très clair */
+            --radius: 12px;           /* Arrondi global */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background: white !important;
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            color: var(--primary) !important;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--dark) !important;
+            margin: 0 8px;
+            transition: color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary) !important;
+        }
+
+        /* --- BOUTONS --- */
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover) !important;
+            border-color: var(--primary-hover) !important;
+        }
+
+        .btn-reston {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+        }
+        .btn-reston:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.3);
+        }
+
+        .btn-outline-reston {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-weight: 600;
+            background: transparent;
+            transition: all 0.3s;
+        }
+        .btn-outline-reston:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* --- UI ELEMENTS --- */
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        /* --- FOOTER PRO --- */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            margin-top: auto;
+            border-top: 4px solid var(--primary); /* Petite touche de couleur en haut */
+        }
+        footer a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        footer a:hover {
+            color: var(--primary);
+        }
+    </style>
 
     {% block stylesheets %}{% endblock %}
     {% block javascripts %}{% endblock %}
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow">
+<nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
 
-
-        {% if is_granted('ROLE_SERVEUR') or is_granted('ROLE_PATRON') %}
-
-
-            {% set dashboardLink = '#' %}
-            {% if is_granted('ROLE_SERVEUR') %}
-                {% set dashboardLink = path('app_serveur_dashboard') %}
-            {% elseif is_granted('ROLE_PATRON') and app.user.restaurant %}
-                {% set dashboardLink = path('app_admin_restaurant_edit', {'id': app.user.restaurant.id}) %}
+        <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+            <i class="fas fa-utensils me-2"></i> RestoN
+            {% if is_granted('ROLE_SERVEUR') or is_granted('ROLE_PATRON') %}
+                <span class="badge bg-dark text-white ms-2" style="font-size: 0.4em; padding: 5px 8px;">PRO</span>
             {% endif %}
+        </a>
 
-            <a class="navbar-brand fw-bold text-warning" href="{{ dashboardLink }}">
-                <i class="bi bi-shop-window"></i> RestoN <span class="badge bg-warning text-dark small" style="font-size: 0.5em; vertical-align: top;">PRO</span>
-            </a>
-        {% else %}
-            <a class="navbar-brand fw-bold text-warning" href="{{ path('app_home') }}">
-                <i class="bi bi-shop-window"></i> RestoN
-            </a>
-        {% endif %}
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
 
+            <ul class="navbar-nav me-auto ms-lg-4">
                 {% if not is_granted('ROLE_SERVEUR') and not is_granted('ROLE_PATRON') %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_restaurants') }}">
-                            <i class="bi bi-journal-text"></i> Nos Restaurants
+                        <a class="nav-link" href="{{ path('app_restaurants') }}">Les Restaurants</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_GERANT') %}
+                    <li class="nav-item ms-lg-3">
+                        <a class="nav-link text-danger fw-bold" href="{{ path('app_admin_patron_index') }}">
+                            <i class="fas fa-lock me-1"></i> Admin
                         </a>
                     </li>
                 {% endif %}
             </ul>
 
-            <ul class="navbar-nav ms-auto align-items-center">
+            <ul class="navbar-nav align-items-center gap-2">
 
                 {% if is_granted('ROLE_SERVEUR') or is_granted('ROLE_PATRON') %}
-
-
                     {% set dashboardLink = '#' %}
+
                     {% if is_granted('ROLE_SERVEUR') %}
                         {% set dashboardLink = path('app_serveur_dashboard') %}
-                    {% elseif is_granted('ROLE_PATRON') and app.user.restaurant %}
-                        {% set dashboardLink = path('app_admin_restaurant_edit', {'id': app.user.restaurant.id}) %}
+                    {% elseif is_granted('ROLE_PATRON') %}
+                        {% if app.user.restaurant %}
+                            {% set dashboardLink = path('app_admin_restaurant_edit', {'id': app.user.restaurant.id}) %}
+                        {% else %}
+                            {% set dashboardLink = path('app_home') %}
+                        {% endif %}
                     {% endif %}
 
                     <li class="nav-item">
-                        <span class="nav-link text-white fw-bold me-2">
-                            Bonjour {{ app.user.prenom }}
-                            {% if is_granted('ROLE_PATRON') %}(Patron){% endif %}
-                        </span>
+                        <span class="fw-bold me-2" style="color: var(--primary);">Bonjour, {{ app.user.prenom }}</span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-warning" href="{{ dashboardLink }}">
-                            <i class="bi bi-speedometer2"></i> Dashboard
+                        <a href="{{ dashboardLink }}" class="btn btn-reston rounded-pill px-4">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger" href="{{ path('app_logout') }}">
-                            <i class="bi bi-power"></i> Déconnexion
+                        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger border-0 rounded-circle" title="Déconnexion">
+                            <i class="fas fa-power-off"></i>
                         </a>
                     </li>
+
                 {% elseif app.user %}
-                    <li class="nav-item">
-                        <a class="btn btn-outline-warning me-3" href="{{ path('cart_index') }}">
-                            <i class="bi bi-cart3"></i> Mon Panier
+                    <li class="nav-item me-2">
+                        <a href="{{ path('cart_index') }}" class="btn btn-outline-reston position-relative border-0">
+                            <i class="fas fa-shopping-basket fa-lg"></i>
                         </a>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i> Mon Compte
+                        <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown" style="color: var(--primary) !important;">
+                            Bonjour, {{ app.user.prenom }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="{{ path('app_mes_commandes') }}">
-                                    <i class="bi bi-receipt"></i> Mes Commandes
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="{{ path('app_profile') }}">
-                                    <i class="bi bi-person-gear"></i> Mon Profil
-                                </a>
-                            </li>
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-3 p-2" style="border-radius: 12px;">
+                            <li><a class="dropdown-item rounded p-2" href="{{ path('app_mes_commandes') }}"><i class="fas fa-receipt me-2 text-muted"></i>Mes Commandes</a></li>
+                            <li><a class="dropdown-item rounded p-2" href="{{ path('app_profile') }}"><i class="fas fa-user-cog me-2 text-muted"></i>Mon Profil</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-                                    <i class="bi bi-box-arrow-right"></i> Déconnexion
-                                </a>
-                            </li>
+                            <li><a class="dropdown-item rounded p-2 text-danger" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Déconnexion</a></li>
                         </ul>
                     </li>
-                    {% if is_granted('ROLE_GERANT') %}
-                        <li class="nav-item ms-lg-3">
-                            <a class="nav-link text-danger fw-bold border border-danger rounded px-3" href="{{ path('app_admin_plats_index') }}">
-                                <i class="bi bi-shield-lock"></i> Admin
-                            </a>
-                        </li>
-                    {% endif %}
 
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                        <a href="{{ path('app_login') }}" class="nav-link">Connexion</a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-primary ms-2 btn-sm" href="{{ path('app_register') }}">Inscription</a>
+                        <a href="{{ path('app_register') }}" class="btn btn-reston">
+                            Inscription
+                        </a>
                     </li>
                 {% endif %}
             </ul>
@@ -133,25 +233,52 @@
     </div>
 </nav>
 
-<main class="container mb-5">
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show shadow-sm" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+<main class="flex-grow-1">
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show shadow-sm border-0 rounded-3" role="alert">
+                    <i class="fas fa-info-circle me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
 
     {% block body %}{% endblock %}
 </main>
 
-<footer class="mt-auto py-3 bg-white border-top text-center">
+<footer class="py-4 mt-auto">
     <div class="container">
-        <span class="text-muted small">© {{ 'now'|date('Y') }} RestoN</span>
+        <div class="row align-items-center">
+
+            <div class="col-md-5 text-center text-md-start mb-3 mb-md-0">
+                <h5 class="mb-1 fw-bold" style="font-family: 'Playfair Display', serif;">RestoN</h5>
+                <p class="small text-white-50 mb-0">La qualité des meilleurs restaurants, chez vous.</p>
+            </div>
+
+            <div class="col-md-7 text-center text-md-end">
+                <div class="mb-2">
+                    <a href="#" class="mx-2"><i class="fab fa-instagram"></i> Instagram</a>
+                    <a href="#" class="mx-2"><i class="fab fa-facebook-f"></i> Facebook</a>
+                    <a href="#" class="mx-2"><i class="fab fa-twitter"></i> Twitter</a>
+                </div>
+                <div class="small text-white-50">
+                    © {{ 'now'|date('Y') }} RestoN Inc. Tous droits réservés.
+                </div>
+            </div>
+        </div>
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+</script>
+
 </body>
 </html>
