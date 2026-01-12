@@ -2,92 +2,110 @@
 
 {% block title %}Connexion - RestoN{% endblock %}
 
-
 {% block stylesheets %}
     <style>
         body {
-            overflow: hidden;
+            background-color: #f0f2f5;
+            overflow: hidden; /* STOP SCROLL */
         }
+
         main {
+            height: calc(100vh - 76px); /* Hauteur écran moins navbar */
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            padding-bottom: 20px;
+            padding: 0;
         }
+
+        .bg-image-login {
+            background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+        }
+
+        /* Sécurité interne pour petits écrans */
+        .scrollable-body {
+            overflow-y: auto;
+            max-height: 100%;
+        }
+        .scrollable-body::-webkit-scrollbar { width: 0; background: transparent; }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-            <div class="col-md-5 col-lg-4">
 
-                <div class="card shadow-sm border-0 rounded-3" style="max-height: 85vh;">
+            <div class="col-md-11 col-lg-10 h-75"> <div class="card shadow-lg border-0 rounded-4 overflow-hidden h-100">
+                    <div class="row g-0 h-100">
 
-                    <div class="card-body p-4 overflow-auto">
-
-
-                        <div class="text-center mb-4">
-                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
-                                <i class="bi bi-person-circle fs-3"></i>
+                        <div class="col-md-6 d-none d-md-block position-relative bg-image-login">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
+                            <div class="position-relative h-100 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center">
+                                <div class="mb-4"><i class="fas fa-door-open fa-3x"></i></div>
+                                <h2 class="fw-bold display-6 mb-3" style="font-family: 'Playfair Display', serif;">Bon retour !</h2>
+                                <p class="lead fs-6">Connectez-vous pour retrouver vos favoris.</p>
                             </div>
-                            <h2 class="fw-bold">Bon retour !</h2>
-                            <p class="text-muted">Connectez-vous à votre espace</p>
                         </div>
 
-                        <form method="post">
-                            {% if error %}
-                                <div class="alert alert-danger py-2 small" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+                        <div class="col-md-6 bg-white h-100">
+                            <div class="card-body p-4 p-lg-5 h-100 d-flex flex-column justify-content-center scrollable-body">
+
+                                <div class="text-center mb-4">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="bi bi-person-circle fs-3"></i>
+                                    </div>
+                                    <h2 class="fw-bold mb-0 text-dark">Connexion</h2>
                                 </div>
-                            {% endif %}
 
-                            {% if app.user %}
-                                <div class="alert alert-info py-2 small mb-3">
-                                    Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}" class="fw-bold">Déconnexion</a>
+                                <form method="post">
+                                    {% if error %}
+                                        <div class="alert alert-danger py-2 small rounded-3 border-0 shadow-sm mb-3">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if app.user %}
+                                        <div class="alert alert-info py-2 small mb-3 rounded-3 border-0">
+                                            Connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}" class="fw-bold text-info">Déconnexion</a>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="mb-3">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                            <input type="email" value="{{ last_username }}" name="email" class="form-control border-start-0 bg-light" placeholder="Email" autocomplete="email" required autofocus>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-key text-muted"></i></span>
+                                            <input type="password" name="password" class="form-control border-start-0 bg-light" placeholder="Mot de passe" autocomplete="current-password" required>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                    <div class="form-check mb-4">
+                                        <input type="checkbox" name="_remember_me" id="_remember_me" class="form-check-input">
+                                        <label class="form-check-label small text-muted" for="_remember_me">Se souvenir de moi</label>
+                                    </div>
+
+                                    <div class="d-grid gap-2 mb-4">
+                                        <button class="btn btn-primary py-2 fw-bold btn-lg" type="submit">Se connecter</button>
+                                    </div>
+                                </form>
+
+                                <div class="text-center border-top pt-3">
+                                    <p class="mb-0 small text-muted">Pas encore de compte ? <a href="{{ path('app_register') }}" class="text-primary fw-bold text-decoration-none">S'inscrire</a></p>
                                 </div>
-                            {% endif %}
 
-
-                            <div class="mb-3">
-                                <label for="inputEmail" class="form-label small text-muted">Adresse Email</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control border-start-0" placeholder="exemple@email.com" autocomplete="email" required autofocus>
-                                </div>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="inputPassword" class="form-label small text-muted">Mot de passe</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-key"></i></span>
-                                    <input type="password" name="password" id="inputPassword" class="form-control border-start-0" placeholder="••••••••" autocomplete="current-password" required>
-                                </div>
-                            </div>
-
-                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                            <div class="form-check mb-4">
-                                <input type="checkbox" name="_remember_me" id="_remember_me" class="form-check-input">
-                                <label class="form-check-label small text-muted" for="_remember_me">
-                                    Se souvenir de moi
-                                </label>
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary btn-lg" type="submit">
-                                    Se connecter <i class="bi bi-box-arrow-in-right"></i>
-                                </button>
-                            </div>
-                        </form>
-
+                        </div>
                     </div>
-
-                    <div class="card-footer bg-light text-center py-3">
-                        <p class="mb-0 text-muted small">Pas encore de compte ? <a href="{{ path('app_register') }}" class="text-primary fw-bold text-decoration-none">S'inscrire</a></p>
-                    </div>
-
                 </div>
             </div>
         </div>
