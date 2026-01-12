@@ -6,20 +6,21 @@
     <div class="container-fluid px-4" style="margin-top: 30px;">
 
         <div class="row">
+
             <div class="col-md-2 d-none d-md-block">
-                <div class="sticky-top" style="top: 20px;">
-                    <div class="card shadow-sm border-primary">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="bi bi-basket"></i> Mon Panier</h5>
+                <div class="sticky-column">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-primary text-white text-center fw-bold">
+                            <i class="bi bi-basket me-2"></i> Mon Panier
                         </div>
 
-                        <div class="card-body">
+                        <div class="card-body p-2">
                             {{ render(controller('App\\Controller\\CartController::summary')) }}
                         </div>
 
-                        <div class="card-footer p-2">
-                            <a href="{{ path('cart_index') }}" class="btn btn-success w-100">
-                                PAYER
+                        <div class="card-footer p-2 bg-white border-0">
+                            <a href="{{ path('cart_index') }}" class="btn btn-success w-100 fw-bold shadow-sm">
+                                PAYER <i class="bi bi-credit-card ms-1"></i>
                             </a>
                         </div>
                     </div>
@@ -27,26 +28,29 @@
             </div>
 
             <div class="col-md-7">
-                <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
-                    <h1 class="h2 m-0">Carte : {{ restaurant.nom }}</h1>
-                    <a href="{{ path('app_restaurants') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left"></i> Changer
+                <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-4 rounded shadow-sm border-0">
+                    <div>
+                        <h1 class="h2 m-0 fw-bold">{{ restaurant.nom }}</h1>
+                        <p class="text-muted mb-0 small"><i class="fas fa-map-marker-alt me-1"></i> {{ restaurant.adresse }}</p>
+                    </div>
+                    <a href="{{ path('app_restaurants') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <i class="bi bi-arrow-left me-1"></i> Retour
                     </a>
                 </div>
 
                 {% set entrees = plats|filter(p => p.category.name == 'Entrée') %}
                 {% if entrees|length > 0 %}
-                    <h3 class="text-success border-bottom pb-2 mb-3 mt-2">Entrées</h3>
+                    <h3 class="text-success border-bottom pb-2 mb-3 mt-2 fw-bold" style="font-family: 'Playfair Display', serif;">Entrées</h3>
                     <div class="row mb-4">
                         {% for plat in entrees %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100 shadow-sm">
+                            <div class="col-md-6 mb-4" data-aos="fade-up">
+                                <div class="card h-100 shadow-sm border-0 hover-effect">
                                     <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex justify-content-between mb-2">
                                             <a href="{{ path('app_plat_show', {'id': plat.id}) }}" class="text-decoration-none text-dark">
-                                                <h5 class="card-title fw-bold">{{ plat.nom }}</h5>
+                                                <h5 class="card-title fw-bold mb-0">{{ plat.nom }}</h5>
                                             </a>
-                                            <span class="text-primary fw-bold">{{ plat.prix }}&nbsp;€</span>
+                                            <span class="text-primary fw-bold fs-5">{{ plat.prix }} €</span>
                                         </div>
                                         <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Délicieux plat fait maison.') }}</p>
 
@@ -57,13 +61,13 @@
 
                                         <div class="mt-3 d-flex justify-content-between align-items-center">
                                             {% if stockTotal > 0 %}
-                                                <span class="badge bg-success bg-opacity-10 text-success border border-success">En stock</span>
-                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-success rounded-pill px-3">
+                                                <span class="badge bg-success-subtle text-success border border-success">En stock</span>
+                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold">
                                                     Ajouter <i class="bi bi-plus-lg"></i>
                                                 </a>
                                             {% else %}
-                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Rupture</span>
-                                                <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>Indisponible</button>
+                                                <span class="badge bg-danger-subtle text-danger border border-danger">Épuisé</span>
+                                                <button class="btn btn-sm btn-light rounded-pill px-3 text-muted" disabled>Indisponible</button>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -75,19 +79,19 @@
 
                 {% set platsPrincipaux = plats|filter(p => p.category.name == 'Plat') %}
                 {% if platsPrincipaux|length > 0 %}
-                    <h3 class="text-primary border-bottom pb-2 mb-3 mt-4">Plats</h3>
+                    <h3 class="text-primary border-bottom pb-2 mb-3 mt-4 fw-bold" style="font-family: 'Playfair Display', serif;">Plats</h3>
                     <div class="row mb-4">
                         {% for plat in platsPrincipaux %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100 shadow-sm">
+                            <div class="col-md-6 mb-4" data-aos="fade-up">
+                                <div class="card h-100 shadow-sm border-0 hover-effect">
                                     <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex justify-content-between mb-2">
                                             <a href="{{ path('app_plat_show', {'id': plat.id}) }}" class="text-decoration-none text-dark">
-                                                <h5 class="card-title fw-bold">{{ plat.nom }}</h5>
+                                                <h5 class="card-title fw-bold mb-0">{{ plat.nom }}</h5>
                                             </a>
-                                            <span class="text-primary fw-bold">{{ plat.prix }}&nbsp;€</span>
+                                            <span class="text-primary fw-bold fs-5">{{ plat.prix }} €</span>
                                         </div>
-                                        <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Délicieux plat fait maison.') }}</p>
+                                        <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Spécialité du chef.') }}</p>
 
                                         {% set stockTotal = 0 %}
                                         {% for stock in plat.platsStocks %}
@@ -96,13 +100,13 @@
 
                                         <div class="mt-3 d-flex justify-content-between align-items-center">
                                             {% if stockTotal > 0 %}
-                                                <span class="badge bg-success bg-opacity-10 text-success border border-success">En stock</span>
-                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-success rounded-pill px-3">
+                                                <span class="badge bg-success-subtle text-success border border-success">En stock</span>
+                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-reston rounded-pill px-3">
                                                     Ajouter <i class="bi bi-plus-lg"></i>
                                                 </a>
                                             {% else %}
-                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Rupture</span>
-                                                <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>Indisponible</button>
+                                                <span class="badge bg-danger-subtle text-danger border border-danger">Épuisé</span>
+                                                <button class="btn btn-sm btn-light rounded-pill px-3 text-muted" disabled>Indisponible</button>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -114,19 +118,19 @@
 
                 {% set desserts = plats|filter(p => p.category.name == 'Dessert') %}
                 {% if desserts|length > 0 %}
-                    <h3 class="text-warning border-bottom pb-2 mb-3 mt-4">Desserts</h3>
+                    <h3 class="text-warning border-bottom pb-2 mb-3 mt-4 fw-bold" style="font-family: 'Playfair Display', serif;">Desserts</h3>
                     <div class="row mb-4">
                         {% for plat in desserts %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100 shadow-sm">
+                            <div class="col-md-6 mb-4" data-aos="fade-up">
+                                <div class="card h-100 shadow-sm border-0 hover-effect">
                                     <div class="card-body d-flex flex-column">
-                                        <div class="d-flex justify-content-between">
+                                        <div class="d-flex justify-content-between mb-2">
                                             <a href="{{ path('app_plat_show', {'id': plat.id}) }}" class="text-decoration-none text-dark">
-                                                <h5 class="card-title fw-bold">{{ plat.nom }}</h5>
+                                                <h5 class="card-title fw-bold mb-0">{{ plat.nom }}</h5>
                                             </a>
-                                            <span class="text-primary fw-bold">{{ plat.prix }}&nbsp;€</span>
+                                            <span class="text-primary fw-bold fs-5">{{ plat.prix }} €</span>
                                         </div>
-                                        <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Délicieux plat fait maison.') }}</p>
+                                        <p class="card-text text-muted small flex-grow-1">{{ plat.description|default('Douceur sucrée.') }}</p>
 
                                         {% set stockTotal = 0 %}
                                         {% for stock in plat.platsStocks %}
@@ -135,13 +139,13 @@
 
                                         <div class="mt-3 d-flex justify-content-between align-items-center">
                                             {% if stockTotal > 0 %}
-                                                <span class="badge bg-success bg-opacity-10 text-success border border-success">En stock</span>
-                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-success rounded-pill px-3">
+                                                <span class="badge bg-success-subtle text-success border border-success">En stock</span>
+                                                <a href="{{ path('cart_add', {'id': plat.id}) }}" class="btn btn-sm btn-outline-warning rounded-pill px-3 text-dark fw-bold">
                                                     Ajouter <i class="bi bi-plus-lg"></i>
                                                 </a>
                                             {% else %}
-                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Rupture</span>
-                                                <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>Indisponible</button>
+                                                <span class="badge bg-danger-subtle text-danger border border-danger">Épuisé</span>
+                                                <button class="btn btn-sm btn-light rounded-pill px-3 text-muted" disabled>Indisponible</button>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -152,36 +156,43 @@
                 {% endif %}
 
                 {% if plats is empty %}
-                    <div class="alert alert-info">Ce restaurant n'a pas encore ajouté de plats.</div>
+                    <div class="alert alert-info text-center py-5">
+                        <i class="fas fa-cookie-bite fa-3x mb-3"></i>
+                        <h4>Oups !</h4>
+                        <p>Ce restaurant n'a pas encore ajouté de plats à sa carte.</p>
+                    </div>
                 {% endif %}
 
                 <hr class="my-5">
 
-                <div id="section-avis" class="bg-light p-4 rounded-3">
+                <div id="section-avis" class="bg-white p-4 rounded-3 shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3 class="mb-0">Avis des clients</h3>
+                        <h3 class="mb-0 fw-bold">Avis des clients</h3>
                         {% if is_granted('ROLE_CLIENT') %}
-                            <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold">
-                                Écrire un avis
+                            <a href="{{ path('app_avis_new', {'id': restaurant.id}) }}" class="btn btn-warning text-dark fw-bold rounded-pill">
+                                <i class="fas fa-pen me-2"></i>Écrire un avis
                             </a>
                         {% endif %}
                     </div>
                     {% if restaurant.avis is empty %}
-                        <p class="text-muted fst-italic">Aucun avis pour le moment.</p>
+                        <div class="text-center py-4 text-muted">
+                            <i class="far fa-comment-dots fa-2x mb-2"></i>
+                            <p class="fst-italic">Soyez le premier à donner votre avis !</p>
+                        </div>
                     {% else %}
                         {% for avis in restaurant.avis %}
-                            <div class="card mb-3 border-0 shadow-sm">
+                            <div class="card mb-3 border-0 bg-light">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
-                                        <h6 class="fw-bold">{{ avis.client.prenom|default('Client') }}</h6>
+                                        <h6 class="fw-bold mb-1">{{ avis.client.prenom|default('Client') }}</h6>
                                         <small class="text-muted">{{ avis.date|date("d/m/Y") }}</small>
                                     </div>
-                                    <div class="text-warning mb-2">
+                                    <div class="text-warning mb-2 small">
                                         {% for i in 1..5 %}
-                                            {{ i <= avis.note ? '★' : '☆' }}
+                                            {% if i <= avis.note %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star text-muted opacity-25"></i>{% endif %}
                                         {% endfor %}
                                     </div>
-                                    <p class="mb-0">{{ avis.commentaire }}</p>
+                                    <p class="mb-0 text-secondary">{{ avis.commentaire }}</p>
                                 </div>
                             </div>
                         {% endfor %}
@@ -189,56 +200,65 @@
                 </div>
 
             </div>
+
             <div class="col-md-3">
-                <div class="sticky-top" style="top: 20px;">
-                    <div class="card shadow-sm mb-3 overflow-hidden">
-                        <div class="ratio ratio-1x1 bg-light">
+                <div class="sticky-column">
+
+                    <div class="card shadow-sm mb-3 overflow-hidden border-0">
+                        <div class="ratio ratio-4x3">
                             <iframe
-                                src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                                style="border:0;" loading="lazy">
+                                src="https://maps.google.com/maps?q={{ restaurant.adresse|url_encode }}&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy">
                             </iframe>
                         </div>
                     </div>
 
-                    <div class="card shadow-sm mb-3">
+                    <div class="card shadow-sm mb-3 border-0">
                         <div class="card-body text-center">
-                            <h4 class="card-title">{{ restaurant.nom }}</h4>
-                            <p class="small text-muted">{{ restaurant.adresse }}</p>
-                            <div class="d-grid">
-                                <button class="btn btn-outline-dark">Réserver une table</button>
+                            <div class="mb-3">
+                                <i class="fas fa-store fa-2x text-primary"></i>
+                            </div>
+                            <h4 class="card-title fw-bold">{{ restaurant.nom }}</h4>
+                            <p class="small text-muted mb-3">{{ restaurant.adresse }}</p>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-dark rounded-pill">Réserver une table</button>
+
+                                {% if is_granted('ROLE_GERANT') or (is_granted('ROLE_PATRON') and app.user.restaurant == restaurant) %}
+                                    <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}" class="btn btn-warning rounded-pill fw-bold">
+                                        <i class="far fa-edit me-2"></i>Modifier ce restaurant
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
 
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-dark text-white">
-                            <h6 class="mb-0"><i class="bi bi-clock"></i> Horaires</h6>
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-dark text-white fw-bold">
+                            <i class="bi bi-clock me-2"></i> Horaires
                         </div>
                         <ul class="list-group list-group-flush small">
                             {% for horaire in horaires|default([]) %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                    <strong>{{ horaire.jour }}</strong>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <strong>{{ horaire.jour|slice(0,3) }}.</strong>
 
-                                    <div class="text-end ms-auto">
-                                        {% if horaire.ferme %}
-                                            <span class="badge bg-danger">Fermé</span>
-                                        {% else %}
+                                    {% if horaire.ferme %}
+                                        <span class="badge bg-danger-subtle text-danger">Fermé</span>
+                                    {% else %}
+                                        <div class="text-end">
                                             {% if horaire.ouvertureMidi %}
-                                                <div style="font-size: 0.9em;">
-                                                    Midi: {{ horaire.ouvertureMidi|date('H:i') }}-{{ horaire.fermetureMidi|date('H:i') }}
-                                                </div>
+                                                <div class="d-block">{{ horaire.ouvertureMidi|date('H:i') }}-{{ horaire.fermetureMidi|date('H:i') }}</div>
                                             {% endif %}
-
                                             {% if horaire.ouvertureSoir %}
-                                                <div style="font-size: 0.9em;">
-                                                    Soir: {{ horaire.ouvertureSoir|date('H:i') }}-{{ horaire.fermetureSoir|date('H:i') }}
-                                                </div>
+                                                <div class="d-block">{{ horaire.ouvertureSoir|date('H:i') }}-{{ horaire.fermetureSoir|date('H:i') }}</div>
                                             {% endif %}
-                                        {% endif %}
-                                    </div>
+                                        </div>
+                                    {% endif %}
                                 </li>
                             {% else %}
-                                <li class="list-group-item text-muted">Horaires non renseignés</li>
+                                <li class="list-group-item text-muted text-center py-3">Horaires non renseignés</li>
                             {% endfor %}
                         </ul>
                     </div>
