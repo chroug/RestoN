@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Client;
 use App\Tests\Support\ControllerTester;
 
 class RegistrationCest
@@ -16,13 +17,12 @@ class RegistrationCest
         $I->fillField('registration_form[nom]', 'Dupont');
         $I->fillField('registration_form[prenom]', 'Jean');
         $I->fillField('registration_form[telephone]', '0601020304');
-        $I->fillField('registration_form[adresseLivraison]', '10 rue du Test');
 
         $I->checkOption('registration_form[agreeTerms]');
 
         $I->click('button[type="submit"]');
 
-        $I->seeInRepository('App\Entity\Client', [
+        $I->seeInRepository(Client::class, [
             'email' => 'nouveau.client@test.com',
             'nom' => 'Dupont'
         ]);
