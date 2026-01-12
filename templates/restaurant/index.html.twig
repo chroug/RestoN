@@ -30,6 +30,14 @@
         <div class="row align-items-center mb-5">
             <div class="col-md-4">
                 <h1 class="fw-bold mb-0">Nos Restaurants</h1>
+
+                {# 👇 AJOUT DU BOUTON POUR LE GÉRANT ICI 👇 #}
+                {% if is_granted('ROLE_GERANT') %}
+                    <a href="{{ path('app_admin_restaurant_new') }}" class="btn btn-primary btn-sm rounded-pill mt-2 shadow-sm">
+                        <i class="bi bi-plus-lg me-1"></i> Ajouter un restaurant
+                    </a>
+                {% endif %}
+
             </div>
 
             <div class="col-md-8 mt-3 mt-md-0">
@@ -95,9 +103,7 @@
 
                         <div class="card-body text-center d-flex flex-column">
 
-
                             <h3 class="card-title fw-bold mt-2">{{ restaurant.nom }}</h3>
-
 
                             <p class="text-muted small mb-3 flex-grow-1">
                                 <i class="bi bi-geo-alt-fill text-danger"></i> {{ restaurant.adresse }}
@@ -122,6 +128,8 @@
                             </div>
 
                             <div class="d-grid gap-2">
+
+                                {# Bouton MODIFIER visible pour le Gérant #}
                                 {% if is_granted('ROLE_GERANT') %}
                                     <a href="{{ path('app_admin_restaurant_edit', {'id': restaurant.id}) }}"
                                        class="btn btn-warning fw-bold shadow-sm">
