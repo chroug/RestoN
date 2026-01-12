@@ -65,6 +65,16 @@
         }
 
         /* --- BOUTONS --- */
+        /* Force tous les boutons "Primary" de Bootstrap à devenir Orange */
+        .btn-primary {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover) !important;
+            border-color: var(--primary-hover) !important;
+        }
+
         .btn-reston {
             background-color: var(--primary);
             color: white;
@@ -96,6 +106,10 @@
         }
 
         /* --- UI ELEMENTS --- */
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
         .card {
             border: none;
             border-radius: var(--radius);
@@ -163,10 +177,10 @@
                     {% endif %}
 
                     <li class="nav-item">
-                        <span class="text-muted small me-2">Bonjour, {{ app.user.prenom }}</span>
+                        <span class="fw-bold me-2" style="color: var(--primary);">Bonjour, {{ app.user.prenom }}</span>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ dashboardLink }}" class="btn btn-dark rounded-pill px-4">
+                        <a href="{{ dashboardLink }}" class="btn btn-reston rounded-pill px-4">
                             <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                         </a>
                     </li>
@@ -184,8 +198,8 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown">
-                            {{ app.user.prenom }}
+                        <a class="nav-link dropdown-toggle fw-bold" href="#" role="button" data-bs-toggle="dropdown" style="color: var(--primary) !important;">
+                            Bonjour, {{ app.user.prenom }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-3 p-2" style="border-radius: 12px;">
                             <li><a class="dropdown-item rounded p-2" href="{{ path('app_mes_commandes') }}"><i class="fas fa-receipt me-2 text-muted"></i>Mes Commandes</a></li>
