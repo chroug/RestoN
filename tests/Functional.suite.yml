@@ -1,0 +1,11 @@
+# tests/functional.suite.yml
+actor: Support\ControllerTester
+modules:
+    enabled:
+        - Symfony:
+              app_path: 'src'
+              environment: 'test'
+        - Doctrine:
+              depends: Symfony
+              cleanup: true
+        - Asserts
