@@ -1,0 +1,208 @@
+{# templates/partials/_chatbot.html.twig #}
+
+<div id="chatbot-trigger" class="shadow-lg" onclick="toggleChat()">
+    <i class="bi bi-chat-dots-fill fs-4 text-white"></i>
+</div>
+
+<div id="chatbot-window" class="shadow-lg d-none">
+
+    <div class="chatbot-header text-white p-3 d-flex justify-content-between align-items-center" style="background-color: #FF5722;">
+        <div>
+            <i class="bi bi-robot me-2"></i> <strong>Assistant RestoN</strong>
+        </div>
+        <button onclick="toggleChat()" class="btn btn-sm btn-link text-white text-decoration-none">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div id="chatbot-messages" class="p-3">
+    </div>
+
+    <div id="chatbot-options" class="p-2 border-top bg-light">
+    </div>
+</div>
+
+<style>
+    #chatbot-trigger {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background-color: #FF5722FF;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 9999;
+        transition: transform 0.3s;
+    }
+    #chatbot-trigger:hover {
+        transform: scale(1.1);
+    }
+
+    #chatbot-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        height: 450px;
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e0e0e0;
+    }
+
+    #chatbot-messages {
+        flex-grow: 1;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        font-size: 0.9em;
+    }
+
+    .bot-message {
+        background-color: #e9ecef;
+        padding: 10px 15px;
+        border-radius: 15px 15px 15px 0;
+        max-width: 80%;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    .user-message {
+        background-color: #FF5722FF;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 15px 15px 0 15px;
+        max-width: 80%;
+        margin-bottom: 10px;
+        margin-left: auto;
+    }
+
+    .chat-option-btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+        text-align: left;
+        border-radius: 20px;
+        font-size: 0.85em;
+    }
+</style>
+
+<script>
+    const chatScenario = {
+        'start': {
+            text: "Bienvenue sur RestoN ! <br>Je peux vous aider à naviguer parmi tous nos restaurants. Que souhaitez-vous savoir ?",
+            options: [
+                { label: "Comment trouver un resto ?", next: 'trouver' },
+                { label: "Puis-je commander chez plusieurs restos ?", next: 'mix_panier' },
+                { label: "Zones de livraison", next: 'livraison' },
+                { label: "Je suis restaurateur", next: 'partenaire' }
+            ]
+        },
+        'trouver': {
+            text: "C'est simple ! Allez sur la page 'Restaurants'. Vous pourrez voir toutes nos enseignes partenaires. Cliquez sur une carte pour voir le menu !",
+            options: [
+                { label: "Voir la liste des restaurants", action: 'redirect_resto' },
+                { label: "Autre question", next: 'start' }
+            ]
+        },
+        'mix_panier': {
+            text: "<strong>Important :</strong> Pour garantir la fraîcheur et la rapidité, un panier ne peut contenir que des plats d'un seul restaurant à la fois. <br>Si vous changez de restaurant, le panier actuel sera réinitialisé.",
+            options: [
+                { label: "Voir mon panier actuel", action: 'redirect_cart' },
+                { label: "Autre question", next: 'start' }
+            ]
+        },
+        'livraison': {
+            text: "Chaque restaurant gère ses propres zones. Vous pouvez choisir entre : <br>1. Sur place <br>2. À emporter",
+        },
+        'partenaire': {
+            text: "Vous possédez un restaurant et voulez rejoindre l'aventure ? Contactez notre administrateur pour créer votre compte Patron !",
+            options: [
+                { label: "Envoyer un mail", next: 'contact_mail' },
+                { label: "Autre question", next: 'start' }
+            ]
+        },
+        'contact_mail': {
+            text: "Écrivez-nous à admin@resto.com. Nous vous répondrons sous 24h.",
+        }
+    };
+
+    function toggleChat() {
+        const chatWindow = document.getElementById('chatbot-window');
+        const messagesDiv = document.getElementById('chatbot-messages');
+
+        chatWindow.classList.toggle('d-none');
+
+        if (!chatWindow.classList.contains('d-none') && messagesDiv.children.length === 0) {
+
+            addMessage(chatScenario['start'].text, 'bot');
+
+            showOptions('start');
+        }
+    }
+
+    function showOptions(stepKey) {
+        const step = chatScenario[stepKey];
+        const optionsDiv = document.getElementById('chatbot-options');
+
+        optionsDiv.innerHTML = '';
+
+        let optionsToDisplay = step.options;
+
+        if (!optionsToDisplay || optionsToDisplay.length === 0) {
+            const sep = document.createElement('div');
+            sep.className = 'text-muted small mb-2 mt-2 text-center';
+            sep.innerHTML = '<em>Autre chose ?</em>';
+            optionsDiv.appendChild(sep);
+
+            optionsToDisplay = chatScenario['start'].options;
+        }
+
+        optionsToDisplay.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-secondary chat-option-btn';
+            btn.innerHTML = opt.label;
+
+            btn.onclick = () => {
+                if(!opt.action) {
+                    addMessage(opt.label, 'user');
+                }
+
+                if (opt.action === 'redirect_resto') {
+                    window.location.href = "{{ path('app_restaurants') }}";
+                }
+                else if (opt.action === 'redirect_cart') {
+                    window.location.href = "{{ path('cart_index') }}";
+                }
+                else if (opt.action === 'map_google') {
+                    window.open('https://maps.google.com', '_blank');
+                }
+                else {
+                    setTimeout(() => {
+                        const nextStep = opt.next || 'start';
+
+                        if (chatScenario[nextStep]) {
+                            addMessage(chatScenario[nextStep].text, 'bot');
+                            showOptions(nextStep);
+                        }
+                    }, 500);
+                }
+            };
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function addMessage(text, sender) {
+        const messagesDiv = document.getElementById('chatbot-messages');
+        const div = document.createElement('div');
+        div.className = sender === 'bot' ? 'bot-message' : 'user-message';
+        div.innerHTML = text;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+</script>
