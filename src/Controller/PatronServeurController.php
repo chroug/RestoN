@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/patron/serveurs')]
 #[IsGranted('ROLE_PATRON')]
@@ -32,27 +34,53 @@ class PatronServeurController extends AbstractController
     }
 
     #[Route('/new', name: 'app_patron_serveur_new')]
-    public function new(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $hasher): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher,
+        MailerInterface $mailer // 👈 On injecte le service Mailer
+    ): Response
     {
         $serveur = new User();
-
         $serveur->setRestaurant($this->getUser()->getRestaurant());
-
         $serveur->setRoles(['ROLE_SERVEUR']);
 
+        // Assure-toi que ton ServeurType n'a PAS de champ 'plainPassword' (comme vu juste avant)
         $form = $this->createForm(ServeurType::class, $serveur, ['is_edit' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $password = $form->get('plainPassword')->getData();
-            if ($password) {
-                $serveur->setPassword($hasher->hashPassword($serveur, $password));
-            }
+
+            // 1. GÉNÉRATION D'UN MOT DE PASSE ALÉATOIRE
+            // On génère une chaîne de 8 caractères au hasard (ex: a1b2c3d4)
+            $plainPassword = bin2hex(random_bytes(4));
+
+            // 2. HASHAGE ET SAUVEGARDE
+            $serveur->setPassword($hasher->hashPassword($serveur, $plainPassword));
 
             $em->persist($serveur);
             $em->flush();
 
-            $this->addFlash('success', 'Le serveur a bien été ajouté !');
+            // 3. ENVOI DE L'EMAIL 📧
+            $email = (new Email())
+                ->from('no-reply@reston.fr') // Mets l'adresse configurée dans ton .env
+                ->to($serveur->getEmail())
+                ->subject('Bienvenue chez RestoN - Vos accès')
+                ->html(
+                    '<h3>Bienvenue dans l\'équipe !</h3>' .
+                    '<p>Votre compte serveur a été créé par votre patron.</p>' .
+                    '<p>Voici vos identifiants pour vous connecter :</p>' .
+                    '<ul>' .
+                    '<li><strong>Email :</strong> ' . $serveur->getEmail() . '</li>' .
+                    '<li><strong>Mot de passe provisoire :</strong> ' . $plainPassword . '</li>' .
+                    '</ul>' .
+                    '<p>Pensez à changer votre mot de passe après la première connexion.</p>' .
+                    '<a href="http://127.0.0.1:8000/login">Se connecter</a>' // Adapte l'URL si besoin
+                );
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Serveur recruté ! Un email avec ses identifiants lui a été envoyé.');
             return $this->redirectToRoute('app_patron_serveur_index');
         }
 

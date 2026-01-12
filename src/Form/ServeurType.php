@@ -20,15 +20,6 @@ class ServeurType extends AbstractType
             ->add('email', EmailType::class, ['label' => 'Email'])
             ->add('nom', TextType::class, ['label' => 'Nom'])
             ->add('prenom', TextType::class, ['label' => 'Prénom'])
-            ->add('plainPassword', PasswordType::class, [
-                'mapped' => false,
-                'required' => $options['is_edit'] ? false : true,
-                'label' => 'Mot de passe',
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new Length(['min' => 6, 'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères']),
-                ],
-            ])
         ;
     }
     public function configureOptions(OptionsResolver $resolver): void
