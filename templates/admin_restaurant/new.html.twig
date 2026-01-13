@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Restaurant - Admin{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+
+                        <div class="text-center mb-4">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                                <i class="bi bi-shop fs-2"></i>
+                            </div>
+                            <h2 class="fw-bold" style="font-family: 'Playfair Display', serif;">Nouveau Restaurant</h2>
+                            <p class="text-muted small">Ajouter un établissement à la franchise RestoN</p>
+                        </div>
+
+                        {{ form_start(form) }}
+
+                        <div class="mb-3">
+                            <label class="form-label small text-muted fw-bold ms-1">Nom de l'établissement</label>
+                            {{ form_widget(form.nom, {'attr': {'class': 'form-control bg-light border-0 py-2', 'placeholder': 'Ex: La Table Gourmande'}}) }}
+                            <div class="form-text text-danger small">{{ form_errors(form.nom) }}</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small text-muted fw-bold ms-1">Adresse complète</label>
+                            {{ form_widget(form.adresse, {'attr': {'class': 'form-control bg-light border-0 py-2', 'placeholder': 'Ex: 15 Avenue Jean Jaurès'}}) }}
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-8">
+                                <label class="form-label small text-muted fw-bold ms-1">Ville</label>
+                                {{ form_widget(form.ville, {'attr': {'class': 'form-control bg-light border-0 py-2'}}) }}
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small text-muted fw-bold ms-1">Code Postal</label>
+                                {{ form_widget(form.codePostal, {'attr': {'class': 'form-control bg-light border-0 py-2'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted fw-bold ms-1">Téléphone</label>
+                                {{ form_widget(form.telephone, {'attr': {'class': 'form-control bg-light border-0 py-2'}}) }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted fw-bold ms-1">Capacité</label>
+                                {{ form_widget(form.nombrePlaces, {'attr': {'class': 'form-control bg-light border-0 py-2'}}) }}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-between align-items-center mt-5">
+                            <a href="{{ path('app_home') }}" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
+                                <i class="bi bi-arrow-left me-2"></i>Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold shadow-sm">
+                                <i class="bi bi-check-lg me-2"></i>Créer le Restaurant
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
