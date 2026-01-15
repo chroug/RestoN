@@ -135,4 +135,19 @@ Les tests actuels (`tests/Controller/`) couvrent les scénarios critiques :
 
 ---
 
+## 🔑 Comptes de Test (Générés par les Fixtures)
 
+Tous les comptes utilisent le même mot de passe : "password"
+
+| Rôle           | Email               | Mot de passe |
+|----------------|---------------------|--------------|
+| 🛠️ Admin      | admin@test.com      | password     |
+| 👔 Patron     | patron@test.com     | password     |
+| 🍽️ Serveur    | serveur@test.com    | password     |
+| 👤 Client     | client@test.com     | password     |
+
+## 🚀 Accès à l'application
+
+Le site est déployé et accessible via le réseau de l'IUT à l'adresse suivante :
+
+http://10.31.33.78/

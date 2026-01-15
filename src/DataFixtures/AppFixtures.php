@@ -38,11 +38,29 @@ class AppFixtures extends Fixture
         $passwordClient = $this->hasher->hashPassword(new Client(), 'password');
 
         GerantFactory::createOne([
-            'email' => 'admin@resto.com',
+            'email' => 'admin@test.com',
             'password' => $passwordGerant,
             'nom' => 'Admin',
-            'prenom' => 'System',
+            'prenom' => 'Fixe',
             'roles' => ['ROLE_GERANT'],
+            'isVerified' => true
+        ]);
+
+        $clientFixe = ClientFactory::createOne([
+            'email' => 'client@test.com',
+            'password' => $passwordClient,
+            'nom' => 'Client',
+            'prenom' => 'Fixe',
+            'roles' => ['ROLE_CLIENT'],
+            'isVerified' => true
+        ]);
+
+        $patronFixe = PatronFactory::createOne([
+            'email' => 'patron@test.com',
+            'password' => $passwordPatron,
+            'nom' => 'Patron',
+            'prenom' => 'Fixe',
+            'roles' => ['ROLE_PATRON'],
             'isVerified' => true
         ]);
 
@@ -58,13 +76,17 @@ class AppFixtures extends Fixture
         $mainResto = RestaurantFactory::createOne([
             'nom' => 'Le Gourmet Symfony',
             'estOuvert' => 'Ouvert',
-            'patron' => PatronFactory::new([
-                'email' => 'patron@gourmet.com',
-                'password' => $passwordPatron,
-                'nom' => 'Boss',
-                'roles' => ['ROLE_PATRON'],
-                'isVerified' => true
-            ]),
+            'patron' => $patronFixe,
+        ]);
+
+        ServeurFactory::createOne([
+            'email' => 'serveur@test.com',
+            'password' => $passwordServeur,
+            'nom' => 'Serveur',
+            'prenom' => 'Fixe',
+            'roles' => ['ROLE_SERVEUR'],
+            'isVerified' => true,
+            'restaurant' => $mainResto
         ]);
 
         $autresRestos = RestaurantFactory::createMany(5, [
@@ -110,7 +132,7 @@ class AppFixtures extends Fixture
 
             $commandes = CommandeFactory::createMany(15, [
                 'restaurant' => $restaurant,
-                'client' => ClientFactory::random(),
+                'client' => rand(0, 1) ? $clientFixe : ClientFactory::random(),
                 'serveur' => $serveursDuResto[array_rand($serveursDuResto)],
                 'date' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('-1 month', 'now')),
                 'total' => 0
